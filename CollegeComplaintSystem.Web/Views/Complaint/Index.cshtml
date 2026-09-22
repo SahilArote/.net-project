@@ -1,0 +1,154 @@
+@model ComplaintListViewModel
+@{
+    ViewData["Title"] = "My Complaints";
+}
+
+<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+    <div>
+        <h1>My Complaints</h1>
+        <p class="subtitle" style="margin-bottom: 0;">Track and manage complaints you have filed</p>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn btn-primary">
+            + Submit Complaint
+        </a>
+    </div>
+</div>
+
+<!-- Search & Filter Card -->
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+    <form method="get" asp-action="Index" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+        <div style="flex: 2; min-width: 200px;">
+            <label class="form-label" for="search">Search</label>
+            <input type="text" id="search" name="search" value="@Model.Search" class="form-control" placeholder="Search by title, reference, location..." />
+        </div>
+
+        <div style="flex: 1; min-width: 150px;">
+            <label class="form-label" for="status">Status</label>
+            <select id="status" name="status" class="form-select">
+                <option value="">All Statuses</option>
+                @foreach (var val in Enum.GetValues<ComplaintStatus>())
+                {
+                    <option value="@val" selected="@(Model.Status == val)">@val</option>
+                }
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary">
+                Filter
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                Reset
+            </a>
+        </div>
+    </form>
+</div>
+
+@if (!Model.Items.Any())
+{
+    <div class="card" style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔍</div>
+        <p style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem;">No matching complaints found</p>
+        <p style="font-size: 0.875rem;">Try modifying your search or filter criteria, or submit a new complaint.</p>
+    </div>
+}
+else
+{
+    <!-- Desktop Table View -->
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    var statusCss = item.Status.ToString().ToLower();
+                    <tr>
+                        <td>
+                            <span class="complaint-ref">@item.ReferenceNumber</span>
+                            @if (item.HasImage)
+                            {
+                                <span title="Has image attachment" style="font-size: 0.85rem; margin-left: 0.25rem;">📷</span>
+                            }
+                        </td>
+                        <td><strong>@item.Title</strong></td>
+                        <td>@item.CategoryName</td>
+                        <td>@item.Location</td>
+                        <td>
+                            <span class="status-badge @statusCss">
+                                @item.Status
+                            </span>
+                        </td>
+                        <td>@item.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td style="text-align: right;">
+                            <a asp-action="Details" asp-route-id="@item.ComplaintId" class="btn btn-secondary btn-sm">
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile Cards View -->
+    <div class="mobile-cards">
+        @foreach (var item in Model.Items)
+        {
+            var statusCss = item.Status.ToString().ToLower();
+            <div class="complaint-card">
+                <div class="complaint-card-top">
+                    <span class="complaint-ref">@item.ReferenceNumber</span>
+                    <span class="status-badge @statusCss">@item.Status</span>
+                </div>
+                <div class="complaint-card-title">@item.Title</div>
+                <div class="complaint-card-meta">
+                    <span>📁 @item.CategoryName</span>
+                    <span>📍 @item.Location</span>
+                    <span>🗓 @item.CreatedAt.ToString("dd MMM yyyy")</span>
+                    @if (item.HasImage)
+                    {
+                        <span>📷 Has photo</span>
+                    }
+                </div>
+                <a asp-action="Details" asp-route-id="@item.ComplaintId" class="btn btn-secondary btn-block btn-sm">
+                    View Details
+                </a>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; font-size: 0.875rem;">
+            <div>
+                Showing page <strong>@Model.PageNumber</strong> of <strong>@Model.TotalPages</strong> (@Model.TotalCount total)
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                @if (Model.PageNumber > 1)
+                {
+                    <a asp-action="Index" asp-route-page="@(Model.PageNumber - 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status" class="btn btn-secondary btn-sm">
+                        &larr; Previous
+                    </a>
+                }
+                @if (Model.PageNumber < Model.TotalPages)
+                {
+                    <a asp-action="Index" asp-route-page="@(Model.PageNumber + 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status" class="btn btn-secondary btn-sm">
+                        Next &rarr;
+                    </a>
+                }
+            </div>
+        </div>
+    }
+}

@@ -1,0 +1,86 @@
+@model List<StudentListItemViewModel>
+@{
+    ViewData["Title"] = "Registered Students";
+}
+
+<div style="margin-bottom: 1.5rem;">
+    <h1>Registered Students</h1>
+    <p class="subtitle" style="margin-bottom: 0;">Directory of students registered on the complaint portal</p>
+</div>
+
+<!-- Search Card -->
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+    <form method="get" asp-action="Students" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+        <div style="flex: 1; min-width: 250px;">
+            <label class="form-label" for="search">Search by Student Name or College ID</label>
+            <input type="text" id="search" name="search" value="@ViewBag.Search" class="form-control" placeholder="e.g. Rahul or STU1024..." />
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+            <a asp-action="Students" class="btn btn-secondary">
+                Reset
+            </a>
+        </div>
+    </form>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card" style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
+        <p>No registered students found matching your search.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>College ID</th>
+                    <th>Email Address</th>
+                    <th>Email Status</th>
+                    <th>Account Status</th>
+                    <th>Joined</th>
+                    <th style="text-align: right;">Total Complaints</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <td><strong>@s.FullName</strong></td>
+                        <td><span style="font-family: monospace; font-weight: 600;">@s.CollegeId</span></td>
+                        <td><a href="mailto:@s.Email">@s.Email</a></td>
+                        <td>
+                            @if (s.EmailConfirmed)
+                            {
+                                <span class="status-badge resolved">Verified</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge submitted">Pending</span>
+                            }
+                        </td>
+                        <td>
+                            @if (s.IsActive)
+                            {
+                                <span style="color: #059669; font-weight: 500;">Active</span>
+                            }
+                            else
+                            {
+                                <span style="color: #DC2626; font-weight: 500;">Deactivated</span>
+                            }
+                        </td>
+                        <td>@s.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td style="text-align: right; font-weight: 600;">
+                            @s.TotalComplaints
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,169 @@
+@model AdminComplaintDetailsViewModel
+@{
+    ViewData["Title"] = $"Review Complaint {Model.ReferenceNumber}";
+    var statusCss = Model.CurrentStatus.ToString().ToLower();
+}
+
+<div style="max-width: 900px; margin: 1.5rem auto;">
+    <div style="margin-bottom: 1.25rem;">
+        <a asp-action="Complaints" class="btn btn-secondary btn-sm">
+            &larr; Back to Complaints List
+        </a>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <span class="complaint-ref" style="font-size: 1.1rem;">@Model.ReferenceNumber</span>
+                <h1 style="font-size: 1.6rem; margin: 0.25rem 0 0 0;">@Model.Title</h1>
+            </div>
+            <div>
+                <span class="status-badge @statusCss" style="font-size: 0.95rem; padding: 0.4rem 0.9rem;">
+                    @Model.CurrentStatus
+                </span>
+            </div>
+        </div>
+
+        <!-- Student & Category Information Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 1.75rem; background-color: var(--bg-color); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+            <div>
+                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Student Full Name</span>
+                <div style="font-weight: 600;">@Model.StudentName</div>
+            </div>
+            <div>
+                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">College ID</span>
+                <div style="font-weight: 600;">@Model.CollegeId</div>
+            </div>
+            <div>
+                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Student Email</span>
+                <div><a href="mailto:@Model.StudentEmail">@Model.StudentEmail</a></div>
+            </div>
+            <div>
+                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Category</span>
+                <div style="font-weight: 600;">@Model.CategoryName</div>
+            </div>
+            <div>
+                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Location</span>
+                <div style="font-weight: 600;">@Model.Location</div>
+            </div>
+            <div>
+                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Submitted Timestamp</span>
+                <div style="color: var(--text-secondary);">@Model.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")</div>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 0.75rem;">Description</h3>
+            <div style="line-height: 1.6; white-space: pre-wrap; background: #FFFFFF; padding: 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">@Model.Description</div>
+        </div>
+
+        <!-- Attached Image -->
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <div style="margin-bottom: 2rem;">
+                <h3 style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 0.75rem;">Supporting Photographic Evidence</h3>
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; max-width: 550px;">
+                    <a href="@Model.ImageUrl" target="_blank" title="Click to view full size">
+                        <img src="@Model.ImageUrl" alt="Evidence photo" style="width: 100%; max-height: 400px; object-fit: contain; background: #000000; display: block;" />
+                    </a>
+                </div>
+            </div>
+        }
+
+        <!-- Status Management Action Box (Enforcing strict state machine) -->
+        <div style="background-color: var(--primary-light); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem;">
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Administrative Action</h3>
+            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                Lifecycle state: <strong>@Model.CurrentStatus</strong>. Moving forward will update the complaint audit log and trigger an automated email notification to the student.
+            </p>
+
+            @if (Model.CanMarkUnderReview)
+            {
+                <form asp-action="UpdateStatus" method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="complaintId" value="@Model.ComplaintId" />
+                    <input type="hidden" name="newStatus" value="@ComplaintStatus.UnderReview" />
+
+                    <div>
+                        <label class="form-label" for="notes">Review Notes (Optional)</label>
+                        <input type="text" id="notes" name="notes" class="form-control" placeholder="e.g. Assigned to maintenance team for inspection..." />
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            🔍 Mark as Under Review
+                        </button>
+                    </div>
+                </form>
+            }
+            else if (Model.CanMarkResolved)
+            {
+                <form asp-action="UpdateStatus" method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="complaintId" value="@Model.ComplaintId" />
+                    <input type="hidden" name="newStatus" value="@ComplaintStatus.Resolved" />
+
+                    <div>
+                        <label class="form-label" for="notes">Resolution Notes (Optional)</label>
+                        <input type="text" id="notes" name="notes" class="form-control" placeholder="e.g. Wi-Fi router replaced and verified..." />
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            ✓ Mark as Resolved
+                        </button>
+                    </div>
+                </form>
+            }
+            else if (Model.CanClose)
+            {
+                <form asp-action="UpdateStatus" method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="complaintId" value="@Model.ComplaintId" />
+                    <input type="hidden" name="newStatus" value="@ComplaintStatus.Closed" />
+
+                    <div>
+                        <label class="form-label" for="notes">Closing Remarks (Optional)</label>
+                        <input type="text" id="notes" name="notes" class="form-control" placeholder="e.g. Confirmed resolved by facility head." />
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-secondary btn-lg">
+                            🔒 Close Complaint
+                        </button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div style="font-weight: 500; color: var(--text-secondary);">
+                    This complaint is marked as <strong>Closed</strong>. No further status changes are permissible.
+                </div>
+            }
+        </div>
+
+        <!-- Status Timeline -->
+        <div>
+            <h3 style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 1rem;">Audit History Timeline</h3>
+            <div class="timeline">
+                @foreach (var h in Model.StatusHistories)
+                {
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">@h.ChangedAt.ToString("dd MMM yyyy, hh:mm tt")</div>
+                        <div class="timeline-content">
+                            <strong>@h.NewStatus</strong>
+                            <span style="color: var(--text-secondary);"> (by @h.ChangedByName)</span>
+                            @if (!string.IsNullOrEmpty(h.Notes))
+                            {
+                                <div style="margin-top: 0.25rem; font-style: italic; color: var(--text-secondary);">"@h.Notes"</div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

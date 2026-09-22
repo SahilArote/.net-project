@@ -1,0 +1,122 @@
+@model ComplaintEditViewModel
+@{
+    ViewData["Title"] = $"Edit Complaint {Model.ReferenceNumber}";
+}
+
+<div style="max-width: 700px; margin: 1.5rem auto;">
+    <div class="card">
+        <div class="card-header-clean">
+            <div>
+                <h2>Edit Complaint</h2>
+                <p class="subtitle" style="margin-bottom: 0;">Reference: <strong class="complaint-ref">@Model.ReferenceNumber</strong> (Status: Submitted)</p>
+            </div>
+        </div>
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input asp-for="ComplaintId" type="hidden" />
+            <input asp-for="ReferenceNumber" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors" role="alert"></div>
+
+            <div class="form-group">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" autofocus />
+                <span asp-validation-for="Title"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId" class="form-label"></label>
+                <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select"></select>
+                <span asp-validation-for="CategoryId"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Location" class="form-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Description"></span>
+            </div>
+
+            <!-- Existing Image preview if any -->
+            @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
+            {
+                <div class="form-group">
+                    <label class="form-label">Current Supporting Photo</label>
+                    <div style="max-width: 300px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden;">
+                        <img src="@Model.ExistingImageUrl" alt="Current image" style="width: 100%; max-height: 180px; object-fit: cover;" />
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="NewImageFile" class="form-label">Replace Supporting Photo (Optional)</label>
+
+                <!-- Hidden inputs -->
+                <input asp-for="NewImageFile" type="file" id="image-upload-input" class="form-control" accept=".jpg,.jpeg,.png,.webp" style="display:none;" />
+                <input type="file" id="camera-direct-input" accept="image/*" capture="environment" style="display:none;" />
+
+                <div class="image-picker-wrapper">
+                    <div style="font-size: 0.95rem; font-weight: 500; margin-bottom: 0.65rem;">Change Photo Evidence</div>
+                    <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">
+                        Upload a new picture from your device or take a live photo using your camera.
+                    </div>
+
+                    <div class="image-picker-buttons">
+                        <button type="button" id="btn-choose-file" class="btn btn-secondary">
+                            📁 Choose from Gallery / Files
+                        </button>
+                        <button type="button" id="btn-open-camera" class="btn btn-primary">
+                            📸 Take Photo with Camera
+                        </button>
+                    </div>
+
+                    <!-- Live Camera Viewfinder Box -->
+                    <div id="camera-viewfinder-box" class="camera-viewfinder-box">
+                        <video id="camera-stream" autoplay playsinline muted></video>
+                        <div class="camera-controls-bar">
+                            <button type="button" id="btn-capture-photo" class="btn btn-success btn-sm">
+                                📸 Snap Photo
+                            </button>
+                            <button type="button" id="btn-cancel-camera" class="btn btn-secondary btn-sm">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Selected/Snapped Image Preview Card -->
+                    <div id="image-preview-container" class="preview-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span id="image-preview-info" style="font-size: 0.825rem; font-weight: 600; color: var(--text-primary);"></span>
+                            <button type="button" id="btn-remove-photo" class="btn btn-danger btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.775rem;">
+                                ✕ Remove / Retake
+                            </button>
+                        </div>
+                        <img id="image-preview" src="#" alt="New Image Preview" />
+                    </div>
+                </div>
+
+                <div class="form-text" style="margin-top: 0.5rem;">Uploading a new image will replace the current one. (Max 5MB).</div>
+                <span asp-validation-for="NewImageFile"></span>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                <a asp-action="Details" asp-route-id="@Model.ComplaintId" class="btn btn-secondary">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

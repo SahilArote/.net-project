@@ -1,0 +1,31 @@
+@model bool
+@{
+    ViewData["Title"] = Model ? "Email Verified" : "Verification Failed";
+}
+
+<div style="max-width: 480px; margin: 3rem auto; text-align: center;">
+    <div class="card" style="padding: 2.5rem 1.5rem;">
+        @if (Model)
+        {
+            <div style="font-size: 3rem; margin-bottom: 1rem; color: #059669;">✓</div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">Email Verified!</h2>
+            <p style="color: var(--text-secondary); line-height: 1.5; margin-bottom: 2rem;">
+                @ViewBag.Message
+            </p>
+            <a asp-action="Login" class="btn btn-primary btn-block btn-lg">
+                Proceed to Sign In
+            </a>
+        }
+        else
+        {
+            <div style="font-size: 3rem; margin-bottom: 1rem; color: #DC2626;">⚠</div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">Verification Failed</h2>
+            <p style="color: var(--text-secondary); line-height: 1.5; margin-bottom: 2rem;">
+                @ViewBag.ErrorMessage
+            </p>
+            <a asp-action="Login" class="btn btn-secondary">
+                Return to Login
+            </a>
+        }
+    </div>
+</div>

@@ -1,0 +1,61 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Student Registration";
+}
+
+<div style="max-width: 500px; margin: 1.5rem auto;">
+    <div class="card">
+        <h2 style="font-size: 1.4rem; margin-bottom: 0.5rem; text-align: center;">Student Registration</h2>
+        <p class="subtitle" style="text-align: center; margin-bottom: 1.5rem;">Create your student account to report and track complaints</p>
+
+        <form asp-action="Register" method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors" role="alert"></div>
+
+            <div class="form-group">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" placeholder="e.g. Rahul Sharma" autocomplete="name" autofocus />
+                <span asp-validation-for="FullName"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CollegeId" class="form-label"></label>
+                <input asp-for="CollegeId" class="form-control" placeholder="e.g. STU1024" />
+                <div class="form-text">Your official college identification / roll number</div>
+                <span asp-validation-for="CollegeId"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="student@college.edu" autocomplete="email" />
+                <div class="form-text">A verification link will be delivered to this address</div>
+                <span asp-validation-for="Email"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" placeholder="At least 6 characters" autocomplete="new-password" />
+                <span asp-validation-for="Password"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" placeholder="Re-enter password" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmPassword"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 0.5rem;">
+                Create Account
+            </button>
+        </form>
+    </div>
+
+    <div style="text-align: center; font-size: 0.875rem; color: var(--text-secondary);">
+        Already registered? <a asp-action="Login" style="font-weight: 500;">Sign in here</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Offline";
+}
+
+<div style="max-width: 500px; margin: 3rem auto; text-align: center;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">📡</div>
+    <h2>You are currently offline</h2>
+    <p style="color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.5rem;">
+        The College Complaint Management System requires an active internet connection to submit new complaints, verify credentials, and sync updates.
+    </p>
+    <button onclick="window.location.reload();" class="btn btn-primary">
+        Try Reconnecting
+    </button>
+</div>

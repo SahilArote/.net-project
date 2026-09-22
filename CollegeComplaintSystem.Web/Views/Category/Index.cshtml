@@ -1,0 +1,76 @@
+@model List<CategoryViewModel>
+@{
+    ViewData["Title"] = "Complaint Categories";
+}
+
+<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+    <div>
+        <h1 style="margin-bottom: 0.25rem;">Complaint Categories</h1>
+        <p class="subtitle" style="margin-bottom: 0;">Manage problem classification categories for student submissions</p>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn btn-primary">
+            + Add New Category
+        </a>
+    </div>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    <div class="table-responsive" style="border: none;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Total Complaints</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cat in Model)
+                {
+                    <tr>
+                        <td><strong>@cat.Name</strong></td>
+                        <td style="color: var(--text-secondary); max-width: 400px;">@(cat.Description ?? "No description provided.")</td>
+                        <td>
+                            @if (cat.IsActive)
+                            {
+                                <span class="status-badge resolved">Active</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge submitted">Inactive (Hidden)</span>
+                            }
+                        </td>
+                        <td>
+                            <strong>@cat.ComplaintCount</strong> complaints
+                        </td>
+                        <td style="text-align: right;">
+                            <div style="display: inline-flex; gap: 0.5rem;">
+                                <a asp-action="Edit" asp-route-id="@cat.CategoryId" class="btn btn-secondary btn-sm">
+                                    Edit
+                                </a>
+                                <form asp-action="ToggleActive" asp-route-id="@cat.CategoryId" method="post" style="display: inline;">
+                                    @Html.AntiForgeryToken()
+                                    @if (cat.IsActive)
+                                    {
+                                        <button type="submit" class="btn btn-secondary btn-sm" title="Deactivating will prevent new complaints but preserve history">
+                                            Deactivate
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            Activate
+                                        </button>
+                                    }
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

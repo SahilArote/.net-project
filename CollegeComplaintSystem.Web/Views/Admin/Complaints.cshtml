@@ -1,0 +1,131 @@
+@model AdminComplaintListViewModel
+@{
+    ViewData["Title"] = "Manage Complaints";
+}
+
+<div style="margin-bottom: 1.5rem;">
+    <h1>Complaint Management</h1>
+    <p class="subtitle" style="margin-bottom: 0;">Review, inspect evidence, and manage complaint lifecycle statuses</p>
+</div>
+
+<!-- Search & Filter Card -->
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+    <form method="get" asp-action="Complaints" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+        <div style="flex: 2; min-width: 220px;">
+            <label class="form-label" for="search">Search</label>
+            <input type="text" id="search" name="search" value="@Model.Search" class="form-control" placeholder="Search reference, title, student, ID..." />
+        </div>
+
+        <div style="flex: 1; min-width: 140px;">
+            <label class="form-label" for="status">Status</label>
+            <select id="status" name="status" class="form-select">
+                <option value="">All Statuses</option>
+                @foreach (var val in Enum.GetValues<ComplaintStatus>())
+                {
+                    <option value="@val" selected="@(Model.Status == val)">@val</option>
+                }
+            </select>
+        </div>
+
+        <div style="flex: 1; min-width: 150px;">
+            <label class="form-label" for="categoryId">Category</label>
+            <select id="categoryId" name="categoryId" asp-items="Model.Categories" class="form-select">
+                <option value="">All Categories</option>
+            </select>
+        </div>
+
+        <div style="flex: 1; min-width: 130px;">
+            <label class="form-label" for="sortBy">Sort By</label>
+            <select id="sortBy" name="sortBy" class="form-select">
+                <option value="newest" selected="@(Model.SortBy == "newest")">Newest</option>
+                <option value="oldest" selected="@(Model.SortBy == "oldest")">Oldest</option>
+                <option value="updated" selected="@(Model.SortBy == "updated")">Recently Updated</option>
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary">
+                Apply Filters
+            </button>
+            <a asp-action="Complaints" class="btn btn-secondary">
+                Reset
+            </a>
+        </div>
+    </form>
+</div>
+
+@if (!Model.Items.Any())
+{
+    <div class="card" style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔍</div>
+        <p style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem;">No matching complaints found</p>
+        <p style="font-size: 0.875rem;">Try adjusting your search criteria or filters.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Student Name</th>
+                    <th>College ID</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.Items)
+                {
+                    var statusCss = c.Status.ToString().ToLower();
+                    <tr>
+                        <td><span class="complaint-ref">@c.ReferenceNumber</span></td>
+                        <td><strong>@c.StudentName</strong></td>
+                        <td>@c.CollegeId</td>
+                        <td>@c.CategoryName</td>
+                        <td>@c.Title</td>
+                        <td>
+                            <span class="status-badge @statusCss">
+                                @c.Status
+                            </span>
+                        </td>
+                        <td>@c.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td style="text-align: right;">
+                            <a asp-action="Details" asp-route-id="@c.ComplaintId" class="btn btn-primary btn-sm">
+                                Review &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; font-size: 0.875rem;">
+            <div>
+                Showing page <strong>@Model.PageNumber</strong> of <strong>@Model.TotalPages</strong> (@Model.TotalCount total records)
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                @if (Model.PageNumber > 1)
+                {
+                    <a asp-action="Complaints" asp-route-page="@(Model.PageNumber - 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status" asp-route-categoryId="@Model.CategoryId" asp-route-sortBy="@Model.SortBy" class="btn btn-secondary btn-sm">
+                        &larr; Previous
+                    </a>
+                }
+                @if (Model.PageNumber < Model.TotalPages)
+                {
+                    <a asp-action="Complaints" asp-route-page="@(Model.PageNumber + 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status" asp-route-categoryId="@Model.CategoryId" asp-route-sortBy="@Model.SortBy" class="btn btn-secondary btn-sm">
+                        Next &rarr;
+                    </a>
+                }
+            </div>
+        </div>
+    }
+}

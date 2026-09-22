@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "College Complaint Portal";
+}
+
+<div style="max-width: 800px; margin: 2rem auto; text-align: center;">
+    <div style="display: inline-block; padding: 0.5rem 1rem; background-color: var(--primary-light); border-radius: 9999px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        Official College Portal
+    </div>
+
+    <h1 style="font-size: 2.5rem; line-height: 1.2; margin-bottom: 1.25rem;">
+        College Complaint Management System
+    </h1>
+
+    <p style="font-size: 1.15rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 2.5rem;">
+        A fast, transparent way for students to report infrastructure, laboratory, sanitation, and administrative issues. Submit details, attach supporting images, and monitor real-time resolution progress.
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem;">
+        <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg">
+            Register as Student
+        </a>
+        <a asp-controller="Account" asp-action="Login" class="btn btn-secondary btn-lg">
+            Sign In to Portal
+        </a>
+    </div>
+
+    <!-- Quick Highlights -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; text-align: left; margin-top: 2rem;">
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Direct Reporting</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">
+                Report issues across campus facilities, laboratories, and departments directly to administration.
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Image Evidence</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">
+                Optionally upload supporting photos to help administrators locate and resolve issues faster.
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Lifecycle Tracking</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">
+                Receive transparent status updates through each phase: Submitted, Under Review, Resolved, and Closed.
+            </p>
+        </div>
+    </div>
+</div>

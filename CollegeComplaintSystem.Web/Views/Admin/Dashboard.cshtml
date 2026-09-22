@@ -1,0 +1,108 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+    <div>
+        <h1 style="margin-bottom: 0.25rem;">Administrator Dashboard</h1>
+        <p class="subtitle" style="margin-bottom: 0;">Overview of campus complaints and resolution metrics</p>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+        <a asp-action="Complaints" class="btn btn-primary">
+            Review Complaints
+        </a>
+        <a asp-controller="Report" asp-action="Index" class="btn btn-secondary">
+            Reports & Analytics
+        </a>
+    </div>
+</div>
+
+<!-- System Statistics Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Total Complaints</div>
+        <div class="stat-value">@Model.TotalComplaints</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Submitted</div>
+        <div class="stat-value submitted">@Model.SubmittedCount</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Under Review</div>
+        <div class="stat-value underreview">@Model.UnderReviewCount</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Resolved</div>
+        <div class="stat-value resolved">@Model.ResolvedCount</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Closed</div>
+        <div class="stat-value closed">@Model.ClosedCount</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Registered Students</div>
+        <div class="stat-value" style="color: var(--accent);">@Model.TotalStudents</div>
+    </div>
+</div>
+
+<!-- Recent Submissions -->
+<div class="card">
+    <div class="card-header-clean">
+        <h2>Recent Complaint Submissions</h2>
+        <a asp-action="Complaints" style="font-size: 0.875rem; font-weight: 500;">
+            View All Complaints &rarr;
+        </a>
+    </div>
+
+    @if (!Model.RecentComplaints.Any())
+    {
+        <div style="text-align: center; padding: 2.5rem; color: var(--text-secondary);">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">✨</div>
+            <p>No complaints currently in the system.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Student</th>
+                        <th>College ID</th>
+                        <th>Category</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Submitted</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model.RecentComplaints)
+                    {
+                        var statusCss = c.Status.ToString().ToLower();
+                        <tr>
+                            <td><span class="complaint-ref">@c.ReferenceNumber</span></td>
+                            <td><strong>@c.StudentName</strong></td>
+                            <td>@c.CollegeId</td>
+                            <td>@c.CategoryName</td>
+                            <td>@c.Title</td>
+                            <td>
+                                <span class="status-badge @statusCss">
+                                    @c.Status
+                                </span>
+                            </td>
+                            <td>@c.CreatedAt.ToString("dd MMM yyyy")</td>
+                            <td style="text-align: right;">
+                                <a asp-action="Details" asp-route-id="@c.ComplaintId" class="btn btn-secondary btn-sm">
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

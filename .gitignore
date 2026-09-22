@@ -1,0 +1,46 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.pidb
+*.booproj
+*.svclog
+
+## Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## SQLite Databases & Local DB files
+*.db
+*.db-shm
+*.db-wal
+
+## Sensitive Configuration & Local Secrets
+appsettings.Development.json
+appsettings.*.local.json
+secrets.json
+
+## Test Results & Coverage
+[Tt]est[Rr]esults/
+*.trx
+coverage/
+
+## OS generated files
+[Dd]esktop.ini
+Thumbs.db
+.DS_Store

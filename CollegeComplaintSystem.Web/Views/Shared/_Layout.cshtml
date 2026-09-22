@@ -1,0 +1,126 @@
+@using CollegeComplaintSystem.Web.Common.Constants
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111827" />
+    <meta name="description" content="College Complaint Management System - Submit and track facility and academic issues." />
+    <title>@ViewData["Title"] - College Complaint Portal</title>
+
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon.svg" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Offline Indicator Banner -->
+    <div id="offline-banner" role="alert">
+        <strong>Offline mode:</strong> You are currently disconnected. An active internet connection is required to submit complaints or perform actions.
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="portal-header">
+        <div class="portal-nav-container">
+            <a href="/" class="brand-link">
+                <svg width="28" height="28" viewBox="0 0 512 512" fill="none">
+                    <rect width="512" height="512" rx="100" fill="#111827"/>
+                    <path d="M120 180h272M120 256h272M120 332h180" stroke="#F8FAFC" stroke-width="36" stroke-linecap="round"/>
+                    <circle cx="370" cy="332" r="36" fill="#3B82F6"/>
+                </svg>
+                <span>College Complaints</span>
+                @if (User.IsInRole(AppRoles.Administrator))
+                {
+                    <span class="brand-badge">ADMIN</span>
+                }
+            </a>
+
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu">
+                ☰
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    @if (User.IsInRole(AppRoles.Administrator))
+                    {
+                        <li><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                        <li><a asp-controller="Complaint" asp-action="Create">+ New Complaint</a></li>
+                        <li><a asp-controller="Admin" asp-action="Complaints">Complaints</a></li>
+                        <li><a asp-controller="Admin" asp-action="Students">Students</a></li>
+                        <li><a asp-controller="Category" asp-action="Index">Categories</a></li>
+                        <li><a asp-controller="Report" asp-action="Index">Reports</a></li>
+                    }
+                    else if (User.IsInRole(AppRoles.Student))
+                    {
+                        <li><a asp-controller="Student" asp-action="Dashboard">Dashboard</a></li>
+                        <li><a asp-controller="Complaint" asp-action="Create">+ Submit Complaint</a></li>
+                        <li><a asp-controller="Complaint" asp-action="Index">My Complaints</a></li>
+                        <li><a asp-controller="Student" asp-action="Profile">Profile</a></li>
+                    }
+
+                    <li class="nav-auth">
+                        <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-secondary btn-sm">Sign Out</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-controller="Account" asp-action="Login">Sign In</a></li>
+                    <li><a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-sm">Student Registration</a></li>
+                }
+            </ul>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main role="main">
+        <div class="container">
+            <!-- Flash Notification Alerts -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    <span>@TempData["SuccessMessage"]</span>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    <span>@TempData["ErrorMessage"]</span>
+                </div>
+            }
+            @if (TempData["InfoMessage"] != null)
+            {
+                <div class="alert alert-info" role="alert">
+                    <span>@TempData["InfoMessage"]</span>
+                </div>
+            }
+
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="portal-footer">
+        <div class="container" style="padding-top: 0; padding-bottom: 0;">
+            <p>&copy; @DateTime.UtcNow.Year College Complaint Management System. Built for students and faculty.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,57 @@
+@model StudentProfileViewModel
+@{
+    ViewData["Title"] = "Student Profile";
+}
+
+<div style="max-width: 600px; margin: 1.5rem auto;">
+    <div class="card">
+        <div class="card-header-clean">
+            <h2>Student Profile</h2>
+            <span class="brand-badge">STUDENT</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div>
+                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Full Name</label>
+                <div style="font-size: 1.15rem; font-weight: 600;">@Model.FullName</div>
+            </div>
+
+            <div>
+                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">College ID</label>
+                <div style="font-size: 1.05rem; font-weight: 500;">@Model.CollegeId</div>
+            </div>
+
+            <div>
+                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">College Email</label>
+                <div style="font-size: 1.05rem;">
+                    @Model.Email
+                    @if (Model.EmailConfirmed)
+                    {
+                        <span style="display: inline-block; margin-left: 0.5rem; color: #059669; font-size: 0.8rem; font-weight: 600;">
+                            ✓ Verified
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <div>
+                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Member Since</label>
+                <div style="color: var(--text-secondary);">@Model.MemberSince.ToString("dd MMMM yyyy")</div>
+            </div>
+
+            <div>
+                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Total Complaints Submitted</label>
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">@Model.TotalComplaintsSubmitted</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <a asp-controller="Student" asp-action="Dashboard" class="btn btn-secondary">
+                &larr; Back to Dashboard
+            </a>
+            <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary">
+                + Submit Complaint
+            </a>
+        </div>
+    </div>
+</div>

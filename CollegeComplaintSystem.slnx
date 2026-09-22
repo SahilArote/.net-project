@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CollegeComplaintSystem.Tests/CollegeComplaintSystem.Tests.csproj" />
+  <Project Path="CollegeComplaintSystem.Web/CollegeComplaintSystem.Web.csproj" />
+</Solution>
