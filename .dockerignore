@@ -3,6 +3,9 @@
 **/bin
 **/obj
 **/.vscode
+**/*.db
 **/*.db-wal
 **/*.db-shm
 **/publish
+appsettings.Development.json
+appsettings.*.local.json

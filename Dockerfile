@@ -17,6 +17,11 @@ RUN dotnet publish "CollegeComplaintSystem.Web.csproj" -c Release -o /app/publis
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+USER root
+RUN chown -R $APP_UID:$APP_UID /app
+USER $APP_UID
+
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
