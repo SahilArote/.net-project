@@ -3,113 +3,116 @@
     ViewData["Title"] = $"Edit Complaint {Model.ReferenceNumber}";
 }
 
-<div style="max-width: 700px; margin: 1.5rem auto;">
-    <div class="card">
-        <div class="card-header-clean">
-            <div>
-                <h2>Edit Complaint</h2>
-                <p class="subtitle" style="margin-bottom: 0;">Reference: <strong class="complaint-ref">@Model.ReferenceNumber</strong> (Status: Submitted)</p>
-            </div>
+<div class="max-w-2xl mx-auto py-6 sm:py-10">
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sm:p-8">
+        <div class="border-b border-gray-200 pb-5 mb-6">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900">Edit Complaint</h1>
+            <p class="text-xs sm:text-sm text-gray-500 mt-1">
+                Reference: <strong class="font-mono text-gray-800">@Model.ReferenceNumber</strong> (Status: Submitted)
+            </p>
         </div>
 
-        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" class="space-y-5">
             @Html.AntiForgeryToken()
             <input asp-for="ComplaintId" type="hidden" />
             <input asp-for="ReferenceNumber" type="hidden" />
 
             <div asp-validation-summary="ModelOnly" class="validation-summary-errors" role="alert"></div>
 
-            <div class="form-group">
-                <label asp-for="Title" class="form-label"></label>
-                <input asp-for="Title" class="form-control" autofocus />
+            <div>
+                <label asp-for="Title" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5"></label>
+                <input asp-for="Title" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" autofocus />
                 <span asp-validation-for="Title"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="CategoryId" class="form-label"></label>
-                <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select"></select>
+            <div>
+                <label asp-for="CategoryId" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5"></label>
+                <select asp-for="CategoryId" asp-items="Model.Categories" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 bg-white focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors"></select>
                 <span asp-validation-for="CategoryId"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Location" class="form-label"></label>
-                <input asp-for="Location" class="form-control" />
+            <div>
+                <label asp-for="Location" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5"></label>
+                <input asp-for="Location" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" />
                 <span asp-validation-for="Location"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Description" class="form-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+            <div>
+                <label asp-for="Description" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5"></label>
+                <textarea asp-for="Description" rows="5" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors resize-y"></textarea>
                 <span asp-validation-for="Description"></span>
             </div>
 
-            <!-- Existing Image preview if any -->
+            <!-- Existing Image Preview -->
             @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
             {
-                <div class="form-group">
-                    <label class="form-label">Current Supporting Photo</label>
-                    <div style="max-width: 300px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden;">
-                        <img src="@Model.ExistingImageUrl" alt="Current image" style="width: 100%; max-height: 180px; object-fit: cover;" />
+                <div class="rounded-lg border border-gray-200 p-4 bg-gray-50/50">
+                    <span class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Current Supporting Photo</span>
+                    <div class="w-48 h-32 rounded-lg border border-gray-200 overflow-hidden bg-black shadow-2xs">
+                        <img src="@Model.ExistingImageUrl" alt="Current evidence photo" class="w-full h-full object-cover" />
                     </div>
                 </div>
             }
 
-            <div class="form-group">
-                <label asp-for="NewImageFile" class="form-label">Replace Supporting Photo (Optional)</label>
+            <!-- Replace Image Controls -->
+            <div>
+                <label asp-for="NewImageFile" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">
+                    Replace Supporting Photo (Optional)
+                </label>
 
                 <!-- Hidden inputs -->
-                <input asp-for="NewImageFile" type="file" id="image-upload-input" class="form-control" accept=".jpg,.jpeg,.png,.webp" style="display:none;" />
-                <input type="file" id="camera-direct-input" accept="image/*" capture="environment" style="display:none;" />
+                <input asp-for="NewImageFile" type="file" id="image-upload-input" accept=".jpg,.jpeg,.png,.webp" class="hidden" />
+                <input type="file" id="camera-direct-input" accept="image/*" capture="environment" class="hidden" />
 
-                <div class="image-picker-wrapper">
-                    <div style="font-size: 0.95rem; font-weight: 500; margin-bottom: 0.65rem;">Change Photo Evidence</div>
-                    <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">
-                        Upload a new picture from your device or take a live photo using your camera.
-                    </div>
+                <div class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/60 p-5 text-center hover:border-gray-300 transition-colors">
+                    <div class="text-sm font-semibold text-gray-900 mb-0.5">Upload Replacement Photo</div>
+                    <p class="text-xs text-gray-500 mb-4 max-w-sm mx-auto">
+                        Choose a new picture from your device or capture a live photo using your camera.
+                    </p>
 
-                    <div class="image-picker-buttons">
-                        <button type="button" id="btn-choose-file" class="btn btn-secondary">
-                            📁 Choose from Gallery / Files
+                    <div class="flex items-center justify-center gap-2.5 flex-wrap">
+                        <button type="button" id="btn-choose-file" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-2xs">
+                            📁 Choose from Files
                         </button>
-                        <button type="button" id="btn-open-camera" class="btn btn-primary">
-                            📸 Take Photo with Camera
+                        <button type="button" id="btn-open-camera" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-2xs">
+                            📸 Open Camera
                         </button>
                     </div>
 
                     <!-- Live Camera Viewfinder Box -->
-                    <div id="camera-viewfinder-box" class="camera-viewfinder-box">
-                        <video id="camera-stream" autoplay playsinline muted></video>
-                        <div class="camera-controls-bar">
-                            <button type="button" id="btn-capture-photo" class="btn btn-success btn-sm">
+                    <div id="camera-viewfinder-box" class="camera-viewfinder-box hidden mt-4 bg-black rounded-xl overflow-hidden max-w-md mx-auto shadow-md">
+                        <video id="camera-stream" autoplay playsinline muted class="w-full max-h-[280px] object-cover bg-black"></video>
+                        <div class="flex items-center justify-center gap-3 p-3 bg-gray-900">
+                            <button type="button" id="btn-capture-photo" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors shadow-sm">
                                 📸 Snap Photo
                             </button>
-                            <button type="button" id="btn-cancel-camera" class="btn btn-secondary btn-sm">
+                            <button type="button" id="btn-cancel-camera" class="inline-flex items-center px-3.5 py-2 text-xs font-medium text-gray-300 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
                                 Cancel
                             </button>
                         </div>
                     </div>
 
                     <!-- Selected/Snapped Image Preview Card -->
-                    <div id="image-preview-container" class="preview-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                            <span id="image-preview-info" style="font-size: 0.825rem; font-weight: 600; color: var(--text-primary);"></span>
-                            <button type="button" id="btn-remove-photo" class="btn btn-danger btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.775rem;">
-                                ✕ Remove / Retake
+                    <div id="image-preview-container" class="preview-card hidden mt-4 bg-white border border-gray-200 rounded-xl p-3.5 text-left shadow-2xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <span id="image-preview-info" class="text-xs font-semibold text-gray-800 truncate"></span>
+                            <button type="button" id="btn-remove-photo" class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded transition-colors">
+                                ✕ Remove
                             </button>
                         </div>
-                        <img id="image-preview" src="#" alt="New Image Preview" />
+                        <img id="image-preview" src="#" alt="New Image Preview" class="w-full max-h-56 object-contain bg-gray-900 rounded-lg border border-gray-100" />
                     </div>
                 </div>
 
-                <div class="form-text" style="margin-top: 0.5rem;">Uploading a new image will replace the current one. (Max 5MB).</div>
+                <p class="text-xs text-gray-400 mt-1">Uploading a new image will replace the current one (Max 5MB).</p>
                 <span asp-validation-for="NewImageFile"></span>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
-                <a asp-action="Details" asp-route-id="@Model.ComplaintId" class="btn btn-secondary">
+            <div class="pt-5 border-t border-gray-200 flex items-center justify-end gap-3">
+                <a asp-action="Details" asp-route-id="@Model.ComplaintId" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                     Cancel
                 </a>
-                <button type="submit" class="btn btn-primary btn-lg">
+                <button type="submit" class="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-sm">
                     Save Changes
                 </button>
             </div>

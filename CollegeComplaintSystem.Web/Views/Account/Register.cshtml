@@ -3,57 +3,62 @@
     ViewData["Title"] = "Student Registration";
 }
 
-<div style="max-width: 500px; margin: 1.5rem auto;">
-    <div class="card">
-        <h2 style="font-size: 1.4rem; margin-bottom: 0.5rem; text-align: center;">Student Registration</h2>
-        <p class="subtitle" style="text-align: center; margin-bottom: 1.5rem;">Create your student account to report and track complaints</p>
+<div class="max-w-lg mx-auto py-6 sm:py-10">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 shadow-sm">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900">Student Registration</h1>
+            <p class="text-sm text-gray-500 mt-1">Create your student account to file and monitor campus complaints</p>
+        </div>
 
-        <form asp-action="Register" method="post">
+        <form asp-action="Register" method="post" class="space-y-4">
             @Html.AntiForgeryToken()
 
             <div asp-validation-summary="ModelOnly" class="validation-summary-errors" role="alert"></div>
 
-            <div class="form-group">
-                <label asp-for="FullName" class="form-label"></label>
-                <input asp-for="FullName" class="form-control" placeholder="e.g. Rahul Sharma" autocomplete="name" autofocus />
+            <div>
+                <label asp-for="FullName" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5"></label>
+                <input asp-for="FullName" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" placeholder="e.g. Rahul Sharma" autocomplete="name" autofocus />
                 <span asp-validation-for="FullName"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="CollegeId" class="form-label"></label>
-                <input asp-for="CollegeId" class="form-control" placeholder="e.g. STU1024" />
-                <div class="form-text">Your official college identification / roll number</div>
+            <div>
+                <label asp-for="CollegeId" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5"></label>
+                <input asp-for="CollegeId" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors font-mono" placeholder="e.g. STU1024" />
+                <p class="text-xs text-gray-400 mt-1">Your official college identification or roll number</p>
                 <span asp-validation-for="CollegeId"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" placeholder="student@college.edu" autocomplete="email" />
-                <div class="form-text">A verification link will be delivered to this address</div>
+            <div>
+                <label asp-for="Email" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5"></label>
+                <input asp-for="Email" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" placeholder="student@college.edu" autocomplete="email" />
+                <p class="text-xs text-gray-400 mt-1">A verification link will be delivered to this address</p>
                 <span asp-validation-for="Email"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" placeholder="At least 6 characters" autocomplete="new-password" />
-                <span asp-validation-for="Password"></span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label asp-for="Password" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5"></label>
+                    <input asp-for="Password" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" placeholder="At least 6 chars" autocomplete="new-password" />
+                    <span asp-validation-for="Password"></span>
+                </div>
+
+                <div>
+                    <label asp-for="ConfirmPassword" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5"></label>
+                    <input asp-for="ConfirmPassword" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" placeholder="Re-enter password" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword"></span>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" placeholder="Re-enter password" autocomplete="new-password" />
-                <span asp-validation-for="ConfirmPassword"></span>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 0.5rem;">
+            <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-sm mt-3">
                 Create Account
             </button>
         </form>
     </div>
 
-    <div style="text-align: center; font-size: 0.875rem; color: var(--text-secondary);">
-        Already registered? <a asp-action="Login" style="font-weight: 500;">Sign in here</a>
-    </div>
+    <p class="text-center text-xs text-gray-500 mt-6">
+        Already registered?
+        <a asp-action="Login" class="font-semibold text-gray-900 hover:underline">Sign in here</a>
+    </p>
 </div>
 
 @section Scripts {

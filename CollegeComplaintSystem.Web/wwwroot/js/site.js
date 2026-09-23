@@ -25,14 +25,62 @@ document.addEventListener('DOMContentLoaded', updateOnlineStatus);
 
 // Mobile Navigation Toggle & Camera/Photo Picker
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Mobile Menu
+    // 1. Mobile Menu Toggle
     const mobileBtn = document.getElementById('mobile-menu-btn');
     const navLinks = document.getElementById('nav-links');
     if (mobileBtn && navLinks) {
         mobileBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('show');
+            const isHidden = navLinks.classList.toggle('hidden');
+            navLinks.classList.toggle('show', !isHidden);
+            mobileBtn.setAttribute('aria-expanded', (!isHidden).toString());
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !navLinks.classList.contains('hidden')) {
+                navLinks.classList.add('hidden');
+                navLinks.classList.remove('show');
+                mobileBtn.setAttribute('aria-expanded', 'false');
+                mobileBtn.focus();
+            }
         });
     }
+
+    // 1b. Mobile Sidebar Drawer Toggle (Portal layout)
+    const mobileSidebar = document.getElementById('mobile-sidebar');
+    const mobileSidebarOpen = document.getElementById('mobile-sidebar-open');
+    const mobileSidebarClose = document.getElementById('mobile-sidebar-close');
+    const mobileSidebarBackdrop = document.getElementById('mobile-sidebar-backdrop');
+
+    function openMobileSidebar() {
+        if (mobileSidebar) {
+            mobileSidebar.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+    }
+
+    function closeMobileSidebar() {
+        if (mobileSidebar) {
+            mobileSidebar.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
+    if (mobileSidebarOpen) {
+        mobileSidebarOpen.addEventListener('click', openMobileSidebar);
+    }
+    if (mobileSidebarClose) {
+        mobileSidebarClose.addEventListener('click', closeMobileSidebar);
+    }
+    if (mobileSidebarBackdrop) {
+        mobileSidebarBackdrop.addEventListener('click', closeMobileSidebar);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileSidebar && !mobileSidebar.classList.contains('hidden')) {
+            closeMobileSidebar();
+        }
+    });
 
     // 2. Photo Picker & Live Camera Integration
     const imageInput = document.getElementById('image-upload-input');

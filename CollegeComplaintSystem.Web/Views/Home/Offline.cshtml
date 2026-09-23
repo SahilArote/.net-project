@@ -2,13 +2,21 @@
     ViewData["Title"] = "Offline";
 }
 
-<div style="max-width: 500px; margin: 3rem auto; text-align: center;">
-    <div style="font-size: 3rem; margin-bottom: 1rem;">📡</div>
-    <h2>You are currently offline</h2>
-    <p style="color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.5rem;">
-        The College Complaint Management System requires an active internet connection to submit new complaints, verify credentials, and sync updates.
-    </p>
-    <button onclick="window.location.reload();" class="btn btn-primary">
-        Try Reconnecting
-    </button>
+<div class="max-w-md mx-auto py-12 text-center">
+    <div class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
+        <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto mb-5">
+            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.166a1 1 0 111.414 1.414" />
+            </svg>
+        </div>
+
+        <h1 class="text-xl font-bold text-gray-900 mb-2">You are currently offline</h1>
+        <p class="text-sm text-gray-500 leading-relaxed mb-6">
+            The College Complaint Management System requires an active internet connection to file complaints, verify accounts, and sync updates.
+        </p>
+
+        <button onclick="window.location.reload();" class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-sm">
+            Try Reconnecting
+        </button>
+    </div>
 </div>

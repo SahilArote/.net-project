@@ -3,27 +3,39 @@
     ViewData["Title"] = Model ? "Email Verified" : "Verification Failed";
 }
 
-<div style="max-width: 480px; margin: 3rem auto; text-align: center;">
-    <div class="card" style="padding: 2.5rem 1.5rem;">
+<div class="max-w-md mx-auto py-8 sm:py-16 text-center">
+    <div class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
         @if (Model)
         {
-            <div style="font-size: 3rem; margin-bottom: 1rem; color: #059669;">✓</div>
-            <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">Email Verified!</h2>
-            <p style="color: var(--text-secondary); line-height: 1.5; margin-bottom: 2rem;">
+            <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-5">
+                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-2">Email Verified!</h1>
+            <p class="text-sm text-gray-600 leading-relaxed mb-6">
                 @ViewBag.Message
             </p>
-            <a asp-action="Login" class="btn btn-primary btn-block btn-lg">
+
+            <a asp-action="Login" class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-sm">
                 Proceed to Sign In
             </a>
         }
         else
         {
-            <div style="font-size: 3rem; margin-bottom: 1rem; color: #DC2626;">⚠</div>
-            <h2 style="font-size: 1.5rem; margin-bottom: 0.75rem;">Verification Failed</h2>
-            <p style="color: var(--text-secondary); line-height: 1.5; margin-bottom: 2rem;">
+            <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-5">
+                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-2">Verification Failed</h1>
+            <p class="text-sm text-gray-600 leading-relaxed mb-6">
                 @ViewBag.ErrorMessage
             </p>
-            <a asp-action="Login" class="btn btn-secondary">
+
+            <a asp-action="Login" class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                 Return to Login
             </a>
         }

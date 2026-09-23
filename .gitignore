@@ -44,3 +44,12 @@ coverage/
 [Dd]esktop.ini
 Thumbs.db
 .DS_Store
+
+## Node.js & Frontend dependencies
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+

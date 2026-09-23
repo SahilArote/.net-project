@@ -1,6 +1,6 @@
 # College Complaint Management System (.NET 10 MVC)
 
-A modern, robust College Complaint Management System built with ASP.NET Core MVC (.NET 10), Entity Framework Core, ASP.NET Core Identity, and Bootstrap.
+A modern, robust College Complaint Management System built with ASP.NET Core MVC (.NET 10), Entity Framework Core, ASP.NET Core Identity, and Tailwind CSS.
 
 ## 📌 Features
 
@@ -30,7 +30,7 @@ A modern, robust College Complaint Management System built with ASP.NET Core MVC
 - **ORM**: Entity Framework Core 10
 - **Security**: ASP.NET Core Identity, Anti-CSRF protection, Security Headers
 - **Cloud / APIs**: Cloudinary (Image storage), Brevo (Transactional Email)
-- **Frontend**: Bootstrap 5, Vanilla CSS, jQuery Validation
+- **Frontend**: Tailwind CSS, Vanilla CSS, Vanilla JavaScript, jQuery Validation
 
 ## 🚀 Getting Started
 

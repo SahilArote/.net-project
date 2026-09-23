@@ -2,48 +2,66 @@
     ViewData["Title"] = "College Complaint Portal";
 }
 
-<div style="max-width: 800px; margin: 2rem auto; text-align: center;">
-    <div style="display: inline-block; padding: 0.5rem 1rem; background-color: var(--primary-light); border-radius: 9999px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 1.5rem;">
-        Official College Portal
+<div class="max-w-4xl mx-auto py-8 sm:py-16 text-center">
+    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-xs font-semibold text-gray-700 tracking-wide uppercase mb-6 border border-gray-200">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+        Official Campus Portal
     </div>
 
-    <h1 style="font-size: 2.5rem; line-height: 1.2; margin-bottom: 1.25rem;">
-        College Complaint Management System
+    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight mb-4 sm:mb-6">
+        College Complaint <br class="hidden sm:inline" />
+        <span class="text-gray-900">Management System</span>
     </h1>
 
-    <p style="font-size: 1.15rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 2.5rem;">
-        A fast, transparent way for students to report infrastructure, laboratory, sanitation, and administrative issues. Submit details, attach supporting images, and monitor real-time resolution progress.
+    <p class="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-10">
+        A fast, transparent way for students to report infrastructure, laboratory, sanitation, and administrative issues. Submit reports with photo evidence and monitor real-time resolution progress.
     </p>
 
-    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem;">
-        <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg">
+    <div class="flex items-center justify-center gap-3 sm:gap-4 flex-wrap mb-14 sm:mb-20">
+        <a asp-controller="Account" asp-action="Register" class="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 shadow-sm transition-colors w-full sm:w-auto">
             Register as Student
         </a>
-        <a asp-controller="Account" asp-action="Login" class="btn btn-secondary btn-lg">
+        <a asp-controller="Account" asp-action="Login" class="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors w-full sm:w-auto">
             Sign In to Portal
         </a>
     </div>
 
     <!-- Quick Highlights -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; text-align: left; margin-top: 2rem;">
-        <div class="card" style="margin-bottom: 0;">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Direct Reporting</h3>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">
-                Report issues across campus facilities, laboratories, and departments directly to administration.
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:border-gray-300 transition-colors">
+            <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4 text-gray-900">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+            </div>
+            <h2 class="text-base font-bold text-gray-900 mb-1.5">Direct Reporting</h2>
+            <p class="text-sm text-gray-500 leading-relaxed">
+                Report issues across campus classrooms, laboratories, sanitation, and departments directly to administration.
             </p>
         </div>
 
-        <div class="card" style="margin-bottom: 0;">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Image Evidence</h3>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">
-                Optionally upload supporting photos to help administrators locate and resolve issues faster.
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:border-gray-300 transition-colors">
+            <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4 text-gray-900">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </div>
+            <h2 class="text-base font-bold text-gray-900 mb-1.5">Image Evidence</h2>
+            <p class="text-sm text-gray-500 leading-relaxed">
+                Attach photos directly from your device library or take live snapshots using your mobile or laptop camera.
             </p>
         </div>
 
-        <div class="card" style="margin-bottom: 0;">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Lifecycle Tracking</h3>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">
-                Receive transparent status updates through each phase: Submitted, Under Review, Resolved, and Closed.
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:border-gray-300 transition-colors">
+            <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4 text-gray-900">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-base font-bold text-gray-900 mb-1.5">Lifecycle Tracking</h2>
+            <p class="text-sm text-gray-500 leading-relaxed">
+                Receive instant status updates through four distinct milestones: Submitted, Under Review, Resolved, and Closed.
             </p>
         </div>
     </div>

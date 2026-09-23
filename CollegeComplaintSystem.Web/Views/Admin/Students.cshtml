@@ -3,23 +3,23 @@
     ViewData["Title"] = "Registered Students";
 }
 
-<div style="margin-bottom: 1.5rem;">
-    <h1>Registered Students</h1>
-    <p class="subtitle" style="margin-bottom: 0;">Directory of students registered on the complaint portal</p>
+<div class="mb-6">
+    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">Registered Students</h1>
+    <p class="text-xs sm:text-sm text-gray-500 mt-1">Directory of students registered on the complaint portal</p>
 </div>
 
 <!-- Search Card -->
-<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
-    <form method="get" asp-action="Students" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
-        <div style="flex: 1; min-width: 250px;">
-            <label class="form-label" for="search">Search by Student Name or College ID</label>
-            <input type="text" id="search" name="search" value="@ViewBag.Search" class="form-control" placeholder="e.g. Rahul or STU1024..." />
+<div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-sm mb-6">
+    <form method="get" asp-action="Students" class="flex flex-col sm:flex-row gap-3 items-end">
+        <div class="flex-1 w-full">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5" for="search">Search by Student Name or College ID</label>
+            <input type="text" id="search" name="search" value="@ViewBag.Search" class="w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" placeholder="e.g. Rahul Sharma or STU1024..." />
         </div>
-        <div style="display: flex; gap: 0.5rem;">
-            <button type="submit" class="btn btn-primary">
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button type="submit" class="flex-1 sm:flex-initial inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-sm">
                 Search
             </button>
-            <a asp-action="Students" class="btn btn-secondary">
+            <a asp-action="Students" class="flex-1 sm:flex-initial inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                 Reset
             </a>
         </div>
@@ -28,59 +28,142 @@
 
 @if (!Model.Any())
 {
-    <div class="card" style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
-        <p>No registered students found matching your search.</p>
+    <div class="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
+        <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3 text-gray-400">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+        </div>
+        <p class="text-base font-semibold text-gray-900 mb-1">No registered students found</p>
+        <p class="text-xs text-gray-500 max-w-sm mx-auto">Try modifying your search term or view all students.</p>
     </div>
 }
 else
 {
-    <div class="table-responsive">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>College ID</th>
-                    <th>Email Address</th>
-                    <th>Email Status</th>
-                    <th>Account Status</th>
-                    <th>Joined</th>
-                    <th style="text-align: right;">Total Complaints</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var s in Model)
-                {
+    <!-- Desktop Table View -->
+    <div class="hidden md:block bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-left text-sm">
+                <thead class="bg-gray-50/75">
                     <tr>
-                        <td><strong>@s.FullName</strong></td>
-                        <td><span style="font-family: monospace; font-weight: 600;">@s.CollegeId</span></td>
-                        <td><a href="mailto:@s.Email">@s.Email</a></td>
-                        <td>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Student Name</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">College ID</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Email Address</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Email Status</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Account Status</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Joined</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Total Complaints</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 bg-white">
+                    @foreach (var s in Model)
+                    {
+                        <tr class="hover:bg-gray-50/60 transition-colors">
+                            <td class="py-3 px-4 font-semibold text-gray-900 whitespace-nowrap">
+                                @s.FullName
+                            </td>
+                            <td class="py-3 px-4 font-mono text-xs text-gray-700 whitespace-nowrap">
+                                @s.CollegeId
+                            </td>
+                            <td class="py-3 px-4 text-xs text-gray-600">
+                                <a href="mailto:@s.Email" class="hover:underline">@s.Email</a>
+                            </td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                @if (s.EmailConfirmed)
+                                {
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        Verified
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                                        Pending
+                                    </span>
+                                }
+                            </td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                @if (s.IsActive)
+                                {
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-red-600">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                                        Deactivated
+                                    </span>
+                                }
+                            </td>
+                            <td class="py-3 px-4 text-gray-500 text-xs whitespace-nowrap">
+                                @s.CreatedAt.ToString("dd MMM yyyy")
+                            </td>
+                            <td class="py-3 px-4 text-right font-semibold text-gray-900 text-xs">
+                                @s.TotalComplaints
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile Cards View -->
+    <div class="md:hidden space-y-3">
+        @foreach (var s in Model)
+        {
+            <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-sm text-gray-900">@s.FullName</span>
+                    <span class="font-mono font-semibold text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
+                        @s.CollegeId
+                    </span>
+                </div>
+
+                <div class="text-xs text-gray-500 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400">Email:</span>
+                        <a href="mailto:@s.Email" class="text-blue-600 truncate max-w-[200px]">@s.Email</a>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400">Email Verification:</span>
+                        <span>
                             @if (s.EmailConfirmed)
                             {
-                                <span class="status-badge resolved">Verified</span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    Verified
+                                </span>
                             }
                             else
                             {
-                                <span class="status-badge submitted">Pending</span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                                    Pending
+                                </span>
                             }
-                        </td>
-                        <td>
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400">Account Status:</span>
+                        <span>
                             @if (s.IsActive)
                             {
-                                <span style="color: #059669; font-weight: 500;">Active</span>
+                                <span class="text-emerald-700 font-semibold text-[11px]">Active</span>
                             }
                             else
                             {
-                                <span style="color: #DC2626; font-weight: 500;">Deactivated</span>
+                                <span class="text-red-600 font-semibold text-[11px]">Deactivated</span>
                             }
-                        </td>
-                        <td>@s.CreatedAt.ToString("dd MMM yyyy")</td>
-                        <td style="text-align: right; font-weight: 600;">
-                            @s.TotalComplaints
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400">Total Complaints:</span>
+                        <span class="font-bold text-gray-900">@s.TotalComplaints</span>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 }

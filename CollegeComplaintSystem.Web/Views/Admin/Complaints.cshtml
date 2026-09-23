@@ -3,22 +3,22 @@
     ViewData["Title"] = "Manage Complaints";
 }
 
-<div style="margin-bottom: 1.5rem;">
-    <h1>Complaint Management</h1>
-    <p class="subtitle" style="margin-bottom: 0;">Review, inspect evidence, and manage complaint lifecycle statuses</p>
+<div class="mb-6">
+    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">Complaint Management</h1>
+    <p class="text-xs sm:text-sm text-gray-500 mt-1">Review, inspect photographic evidence, and manage complaint lifecycle statuses</p>
 </div>
 
 <!-- Search & Filter Card -->
-<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
-    <form method="get" asp-action="Complaints" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
-        <div style="flex: 2; min-width: 220px;">
-            <label class="form-label" for="search">Search</label>
-            <input type="text" id="search" name="search" value="@Model.Search" class="form-control" placeholder="Search reference, title, student, ID..." />
+<div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-sm mb-6">
+    <form method="get" asp-action="Complaints" class="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-end">
+        <div class="sm:col-span-12 lg:col-span-4">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5" for="search">Search</label>
+            <input type="text" id="search" name="search" value="@Model.Search" class="w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" placeholder="Reference, title, student, ID..." />
         </div>
 
-        <div style="flex: 1; min-width: 140px;">
-            <label class="form-label" for="status">Status</label>
-            <select id="status" name="status" class="form-select">
+        <div class="sm:col-span-4 lg:col-span-2">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5" for="status">Status</label>
+            <select id="status" name="status" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 bg-white focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors">
                 <option value="">All Statuses</option>
                 @foreach (var val in Enum.GetValues<ComplaintStatus>())
                 {
@@ -27,101 +27,175 @@
             </select>
         </div>
 
-        <div style="flex: 1; min-width: 150px;">
-            <label class="form-label" for="categoryId">Category</label>
-            <select id="categoryId" name="categoryId" asp-items="Model.Categories" class="form-select">
+        <div class="sm:col-span-4 lg:col-span-3">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5" for="categoryId">Category</label>
+            <select id="categoryId" name="categoryId" asp-items="Model.Categories" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 bg-white focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors">
                 <option value="">All Categories</option>
             </select>
         </div>
 
-        <div style="flex: 1; min-width: 130px;">
-            <label class="form-label" for="sortBy">Sort By</label>
-            <select id="sortBy" name="sortBy" class="form-select">
+        <div class="sm:col-span-4 lg:col-span-3">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5" for="sortBy">Sort By</label>
+            <select id="sortBy" name="sortBy" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 bg-white focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors">
                 <option value="newest" selected="@(Model.SortBy == "newest")">Newest</option>
                 <option value="oldest" selected="@(Model.SortBy == "oldest")">Oldest</option>
                 <option value="updated" selected="@(Model.SortBy == "updated")">Recently Updated</option>
             </select>
         </div>
 
-        <div style="display: flex; gap: 0.5rem;">
-            <button type="submit" class="btn btn-primary">
-                Apply Filters
-            </button>
-            <a asp-action="Complaints" class="btn btn-secondary">
+        <div class="sm:col-span-12 flex items-center justify-end gap-2.5 pt-2">
+            <a asp-action="Complaints" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                 Reset
             </a>
+            <button type="submit" class="inline-flex items-center justify-center px-5 py-2 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-sm">
+                Apply Filters
+            </button>
         </div>
     </form>
 </div>
 
 @if (!Model.Items.Any())
 {
-    <div class="card" style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
-        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔍</div>
-        <p style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem;">No matching complaints found</p>
-        <p style="font-size: 0.875rem;">Try adjusting your search criteria or filters.</p>
+    <div class="bg-white rounded-xl border border-gray-200 p-12 text-center shadow-sm">
+        <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3 text-gray-400">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </div>
+        <p class="text-base font-semibold text-gray-900 mb-1">No matching complaints found</p>
+        <p class="text-xs text-gray-500 max-w-sm mx-auto">Try adjusting your keyword search or category/status filters.</p>
     </div>
 }
 else
 {
-    <div class="table-responsive">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Reference</th>
-                    <th>Student Name</th>
-                    <th>College ID</th>
-                    <th>Category</th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Submitted</th>
-                    <th style="text-align: right;">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var c in Model.Items)
-                {
-                    var statusCss = c.Status.ToString().ToLower();
+    <!-- Desktop Table View -->
+    <div class="hidden md:block bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-left text-sm">
+                <thead class="bg-gray-50/75">
                     <tr>
-                        <td><span class="complaint-ref">@c.ReferenceNumber</span></td>
-                        <td><strong>@c.StudentName</strong></td>
-                        <td>@c.CollegeId</td>
-                        <td>@c.CategoryName</td>
-                        <td>@c.Title</td>
-                        <td>
-                            <span class="status-badge @statusCss">
-                                @c.Status
-                            </span>
-                        </td>
-                        <td>@c.CreatedAt.ToString("dd MMM yyyy")</td>
-                        <td style="text-align: right;">
-                            <a asp-action="Details" asp-route-id="@c.ComplaintId" class="btn btn-primary btn-sm">
-                                Review &rarr;
-                            </a>
-                        </td>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Reference</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Student Name</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">College ID</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Submitted</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Action</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="divide-y divide-gray-100 bg-white">
+                    @foreach (var c in Model.Items)
+                    {
+                        var statusLower = c.Status.ToString().ToLower();
+                        var statusBadgeClasses = statusLower switch {
+                            "submitted" => "bg-slate-100 text-slate-700 border-slate-200",
+                            "underreview" => "bg-amber-50 text-amber-800 border-amber-200",
+                            "resolved" => "bg-emerald-50 text-emerald-800 border-emerald-200",
+                            "closed" => "bg-indigo-50 text-indigo-700 border-indigo-200",
+                            _ => "bg-gray-100 text-gray-700 border-gray-200"
+                        };
+
+                        <tr class="hover:bg-gray-50/60 transition-colors">
+                            <td class="py-3 px-4 font-mono font-semibold text-xs text-gray-900 whitespace-nowrap">
+                                @c.ReferenceNumber
+                            </td>
+                            <td class="py-3 px-4 font-medium text-gray-900 whitespace-nowrap">
+                                @c.StudentName
+                            </td>
+                            <td class="py-3 px-4 font-mono text-xs text-gray-600 whitespace-nowrap">
+                                @c.CollegeId
+                            </td>
+                            <td class="py-3 px-4 text-gray-600 text-xs">
+                                @c.CategoryName
+                            </td>
+                            <td class="py-3 px-4 font-medium text-gray-900 max-w-xs truncate">
+                                @c.Title
+                            </td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border @statusBadgeClasses">
+                                    @c.Status
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-gray-500 text-xs whitespace-nowrap">
+                                @c.CreatedAt.ToString("dd MMM yyyy")
+                            </td>
+                            <td class="py-3 px-4 text-right whitespace-nowrap">
+                                <a asp-action="Details" asp-route-id="@c.ComplaintId" class="inline-flex items-center px-3 py-1 text-xs font-semibold text-white bg-gray-900 rounded-md hover:bg-gray-800 transition-colors shadow-2xs">
+                                    Review &rarr;
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile Cards View -->
+    <div class="md:hidden space-y-3">
+        @foreach (var c in Model.Items)
+        {
+            var statusLower = c.Status.ToString().ToLower();
+            var statusBadgeClasses = statusLower switch {
+                "submitted" => "bg-slate-100 text-slate-700 border-slate-200",
+                "underreview" => "bg-amber-50 text-amber-800 border-amber-200",
+                "resolved" => "bg-emerald-50 text-emerald-800 border-emerald-200",
+                "closed" => "bg-indigo-50 text-indigo-700 border-indigo-200",
+                _ => "bg-gray-100 text-gray-700 border-gray-200"
+            };
+
+            <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="font-mono font-semibold text-xs text-gray-900">@c.ReferenceNumber</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border @statusBadgeClasses">
+                        @c.Status
+                    </span>
+                </div>
+
+                <h3 class="text-sm font-semibold text-gray-900 leading-snug">@c.Title</h3>
+
+                <div class="text-xs text-gray-500 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400">Student:</span>
+                        <span class="font-medium text-gray-900">@c.StudentName (@c.CollegeId)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400">Category:</span>
+                        <span class="text-gray-700">@c.CategoryName</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400">Submitted:</span>
+                        <span class="text-gray-700">@c.CreatedAt.ToString("dd MMM yyyy")</span>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-gray-100">
+                    <a asp-action="Details" asp-route-id="@c.ComplaintId" class="w-full inline-flex items-center justify-center px-3 py-1.5 text-xs font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-2xs">
+                        Review Complaint
+                    </a>
+                </div>
+            </div>
+        }
     </div>
 
     <!-- Pagination -->
     @if (Model.TotalPages > 1)
     {
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; font-size: 0.875rem;">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-6 border-t border-gray-200 mt-6 text-xs text-gray-600">
             <div>
-                Showing page <strong>@Model.PageNumber</strong> of <strong>@Model.TotalPages</strong> (@Model.TotalCount total records)
+                Showing page <strong class="font-semibold text-gray-900">@Model.PageNumber</strong> of <strong class="font-semibold text-gray-900">@Model.TotalPages</strong> (@Model.TotalCount total records)
             </div>
-            <div style="display: flex; gap: 0.5rem;">
+            <div class="flex items-center gap-2">
                 @if (Model.PageNumber > 1)
                 {
-                    <a asp-action="Complaints" asp-route-page="@(Model.PageNumber - 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status" asp-route-categoryId="@Model.CategoryId" asp-route-sortBy="@Model.SortBy" class="btn btn-secondary btn-sm">
+                    <a asp-action="Complaints" asp-route-page="@(Model.PageNumber - 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status" asp-route-categoryId="@Model.CategoryId" asp-route-sortBy="@Model.SortBy" class="inline-flex items-center px-3 py-1.5 font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         &larr; Previous
                     </a>
                 }
                 @if (Model.PageNumber < Model.TotalPages)
                 {
-                    <a asp-action="Complaints" asp-route-page="@(Model.PageNumber + 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status" asp-route-categoryId="@Model.CategoryId" asp-route-sortBy="@Model.SortBy" class="btn btn-secondary btn-sm">
+                    <a asp-action="Complaints" asp-route-page="@(Model.PageNumber + 1)" asp-route-search="@Model.Search" asp-route-status="@Model.Status" asp-route-categoryId="@Model.CategoryId" asp-route-sortBy="@Model.SortBy" class="inline-flex items-center px-3 py-1.5 font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         Next &rarr;
                     </a>
                 }

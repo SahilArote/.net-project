@@ -3,53 +3,63 @@
     ViewData["Title"] = "Student Profile";
 }
 
-<div style="max-width: 600px; margin: 1.5rem auto;">
-    <div class="card">
-        <div class="card-header-clean">
-            <h2>Student Profile</h2>
-            <span class="brand-badge">STUDENT</span>
+<div class="max-w-2xl mx-auto py-6 sm:py-10">
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-gray-900">Student Profile</h1>
+                <p class="text-xs text-gray-500 mt-0.5">Your official account registration and filing history</p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">
+                Student
+            </span>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-            <div>
-                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Full Name</label>
-                <div style="font-size: 1.15rem; font-weight: 600;">@Model.FullName</div>
+        <div class="p-6 divide-y divide-gray-100 space-y-4">
+            <div class="pt-2 first:pt-0">
+                <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Full Name</span>
+                <div class="text-base font-semibold text-gray-900">@Model.FullName</div>
             </div>
 
-            <div>
-                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">College ID</label>
-                <div style="font-size: 1.05rem; font-weight: 500;">@Model.CollegeId</div>
+            <div class="pt-4">
+                <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">College Identification</span>
+                <div class="text-sm font-mono font-semibold text-gray-800 bg-gray-50 inline-block px-2.5 py-1 rounded border border-gray-200">
+                    @Model.CollegeId
+                </div>
             </div>
 
-            <div>
-                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">College Email</label>
-                <div style="font-size: 1.05rem;">
-                    @Model.Email
+            <div class="pt-4">
+                <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">College Email Address</span>
+                <div class="text-sm text-gray-900 flex items-center gap-2 flex-wrap">
+                    <span>@Model.Email</span>
                     @if (Model.EmailConfirmed)
                     {
-                        <span style="display: inline-block; margin-left: 0.5rem; color: #059669; font-size: 0.8rem; font-weight: 600;">
-                            ✓ Verified
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <svg class="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Verified
                         </span>
                     }
                 </div>
             </div>
 
-            <div>
-                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Member Since</label>
-                <div style="color: var(--text-secondary);">@Model.MemberSince.ToString("dd MMMM yyyy")</div>
+            <div class="pt-4">
+                <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Member Since</span>
+                <div class="text-sm text-gray-600">@Model.MemberSince.ToString("dd MMMM yyyy")</div>
             </div>
 
-            <div>
-                <label class="form-label" style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Total Complaints Submitted</label>
-                <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">@Model.TotalComplaintsSubmitted</div>
+            <div class="pt-4">
+                <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Total Complaints Filed</span>
+                <div class="text-2xl font-extrabold text-gray-900">@Model.TotalComplaintsSubmitted</div>
             </div>
         </div>
 
-        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-            <a asp-controller="Student" asp-action="Dashboard" class="btn btn-secondary">
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-3">
+            <a asp-controller="Student" asp-action="Dashboard" class="inline-flex items-center px-3.5 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                 &larr; Back to Dashboard
             </a>
-            <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary">
+            <a asp-controller="Complaint" asp-action="Create" class="inline-flex items-center px-4 py-2 text-xs font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-sm">
                 + Submit Complaint
             </a>
         </div>

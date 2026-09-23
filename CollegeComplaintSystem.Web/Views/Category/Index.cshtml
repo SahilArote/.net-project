@@ -3,65 +3,77 @@
     ViewData["Title"] = "Complaint Categories";
 }
 
-<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
     <div>
-        <h1 style="margin-bottom: 0.25rem;">Complaint Categories</h1>
-        <p class="subtitle" style="margin-bottom: 0;">Manage problem classification categories for student submissions</p>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">Complaint Categories</h1>
+        <p class="text-xs sm:text-sm text-gray-500 mt-1">Manage problem classification categories available for student submissions</p>
     </div>
     <div>
-        <a asp-action="Create" class="btn btn-primary">
-            + Add New Category
+        <a asp-action="Create" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 shadow-sm transition-colors w-full sm:w-auto">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Add New Category
         </a>
     </div>
 </div>
 
-<div class="card" style="padding: 0; overflow: hidden;">
-    <div class="table-responsive" style="border: none;">
-        <table class="data-table">
-            <thead>
+<!-- Desktop Table -->
+<div class="hidden md:block bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-left text-sm">
+            <thead class="bg-gray-50/75">
                 <tr>
-                    <th>Category Name</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th>Total Complaints</th>
-                    <th style="text-align: right;">Actions</th>
+                    <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Category Name</th>
+                    <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
+                    <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                    <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Complaints</th>
+                    <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-100 bg-white">
                 @foreach (var cat in Model)
                 {
-                    <tr>
-                        <td><strong>@cat.Name</strong></td>
-                        <td style="color: var(--text-secondary); max-width: 400px;">@(cat.Description ?? "No description provided.")</td>
-                        <td>
+                    <tr class="hover:bg-gray-50/60 transition-colors">
+                        <td class="py-3.5 px-4 font-semibold text-gray-900 whitespace-nowrap">
+                            @cat.Name
+                        </td>
+                        <td class="py-3.5 px-4 text-gray-500 text-xs max-w-sm">
+                            @(cat.Description ?? "No description provided.")
+                        </td>
+                        <td class="py-3.5 px-4 whitespace-nowrap">
                             @if (cat.IsActive)
                             {
-                                <span class="status-badge resolved">Active</span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    Active
+                                </span>
                             }
                             else
                             {
-                                <span class="status-badge submitted">Inactive (Hidden)</span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                                    Inactive
+                                </span>
                             }
                         </td>
-                        <td>
-                            <strong>@cat.ComplaintCount</strong> complaints
+                        <td class="py-3.5 px-4 text-xs font-semibold text-gray-900 whitespace-nowrap">
+                            @cat.ComplaintCount
                         </td>
-                        <td style="text-align: right;">
-                            <div style="display: inline-flex; gap: 0.5rem;">
-                                <a asp-action="Edit" asp-route-id="@cat.CategoryId" class="btn btn-secondary btn-sm">
+                        <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                            <div class="inline-flex items-center gap-1.5">
+                                <a asp-action="Edit" asp-route-id="@cat.CategoryId" class="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                                     Edit
                                 </a>
-                                <form asp-action="ToggleActive" asp-route-id="@cat.CategoryId" method="post" style="display: inline;">
+                                <form asp-action="ToggleActive" asp-route-id="@cat.CategoryId" method="post" class="inline-flex">
                                     @Html.AntiForgeryToken()
                                     @if (cat.IsActive)
                                     {
-                                        <button type="submit" class="btn btn-secondary btn-sm" title="Deactivating will prevent new complaints but preserve history">
+                                        <button type="submit" class="inline-flex items-center px-2.5 py-1 text-xs font-medium text-amber-700 bg-white border border-amber-300 rounded hover:bg-amber-50 transition-colors" title="Deactivating will prevent new complaints but preserve history">
                                             Deactivate
                                         </button>
                                     }
                                     else
                                     {
-                                        <button type="submit" class="btn btn-success btn-sm">
+                                        <button type="submit" class="inline-flex items-center px-2.5 py-1 text-xs font-medium text-emerald-700 bg-white border border-emerald-300 rounded hover:bg-emerald-50 transition-colors">
                                             Activate
                                         </button>
                                     }
@@ -73,4 +85,58 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<!-- Mobile Cards View -->
+<div class="md:hidden space-y-3">
+    @foreach (var cat in Model)
+    {
+        <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm space-y-2.5">
+            <div class="flex items-center justify-between">
+                <span class="font-bold text-sm text-gray-900">@cat.Name</span>
+                @if (cat.IsActive)
+                {
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Active
+                    </span>
+                }
+                else
+                {
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                        Inactive
+                    </span>
+                }
+            </div>
+
+            <p class="text-xs text-gray-500">
+                @(cat.Description ?? "No description provided.")
+            </p>
+
+            <div class="text-xs font-medium text-gray-600">
+                <span>Total Complaints: </span>
+                <strong class="text-gray-900">@cat.ComplaintCount</strong>
+            </div>
+
+            <div class="pt-2 border-t border-gray-100 flex items-center justify-end gap-2">
+                <a asp-action="Edit" asp-route-id="@cat.CategoryId" class="flex-1 inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    Edit
+                </a>
+                <form asp-action="ToggleActive" asp-route-id="@cat.CategoryId" method="post" class="flex-1 inline-flex">
+                    @Html.AntiForgeryToken()
+                    @if (cat.IsActive)
+                    {
+                        <button type="submit" class="w-full inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-amber-700 bg-white border border-amber-300 rounded-lg hover:bg-amber-50 transition-colors">
+                            Deactivate
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="w-full inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-emerald-700 bg-white border border-emerald-300 rounded-lg hover:bg-emerald-50 transition-colors">
+                            Activate
+                        </button>
+                    }
+                </form>
+            </div>
+        </div>
+    }
 </div>

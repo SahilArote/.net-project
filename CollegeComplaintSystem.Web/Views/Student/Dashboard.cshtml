@@ -3,95 +3,129 @@
     ViewData["Title"] = "Student Dashboard";
 }
 
-<div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+<!-- Welcome Section -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
     <div>
-        <h1 style="margin-bottom: 0.25rem;">Welcome, @Model.StudentName</h1>
-        <p class="subtitle" style="margin-bottom: 0;">College ID: <strong>@Model.CollegeId</strong></p>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">Welcome, @Model.StudentName</h1>
+        <p class="text-xs sm:text-sm text-gray-500 mt-1 flex items-center gap-2">
+            <span>College ID:</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded font-mono font-semibold text-xs bg-gray-100 text-gray-800 border border-gray-200">
+                @Model.CollegeId
+            </span>
+        </p>
     </div>
     <div>
-        <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary btn-lg">
-            + Submit New Complaint
+        <a asp-controller="Complaint" asp-action="Create" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 shadow-sm transition-colors w-full sm:w-auto">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Submit New Complaint
         </a>
     </div>
 </div>
 
-<!-- Metrics Cards -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-label">Total Complaints</div>
-        <div class="stat-value">@Model.TotalComplaints</div>
+<!-- Metrics Cards Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4 mb-8">
+    <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-sm">
+        <div class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Total Filed</div>
+        <div class="text-2xl sm:text-3xl font-extrabold text-gray-900">@Model.TotalComplaints</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-label">Submitted</div>
-        <div class="stat-value submitted">@Model.SubmittedCount</div>
+    <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-sm">
+        <div class="text-[11px] font-semibold uppercase tracking-wider text-slate-600 mb-1">Submitted</div>
+        <div class="text-2xl sm:text-3xl font-extrabold text-slate-700">@Model.SubmittedCount</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-label">Under Review</div>
-        <div class="stat-value underreview">@Model.UnderReviewCount</div>
+    <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-sm">
+        <div class="text-[11px] font-semibold uppercase tracking-wider text-amber-700 mb-1">Under Review</div>
+        <div class="text-2xl sm:text-3xl font-extrabold text-amber-800">@Model.UnderReviewCount</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-label">Resolved</div>
-        <div class="stat-value resolved">@Model.ResolvedCount</div>
+    <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-sm">
+        <div class="text-[11px] font-semibold uppercase tracking-wider text-emerald-700 mb-1">Resolved</div>
+        <div class="text-2xl sm:text-3xl font-extrabold text-emerald-800">@Model.ResolvedCount</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-label">Closed</div>
-        <div class="stat-value closed">@Model.ClosedCount</div>
+    <div class="col-span-2 sm:col-span-1 bg-white rounded-xl border border-gray-200 p-4 sm:p-5 shadow-sm">
+        <div class="text-[11px] font-semibold uppercase tracking-wider text-indigo-700 mb-1">Closed</div>
+        <div class="text-2xl sm:text-3xl font-extrabold text-indigo-800">@Model.ClosedCount</div>
     </div>
 </div>
 
 <!-- Recent Complaints Section -->
-<div class="card">
-    <div class="card-header-clean">
-        <h2>Recent Complaints</h2>
-        <a asp-controller="Complaint" asp-action="Index" style="font-size: 0.875rem; font-weight: 500;">
-            View All Complaints &rarr;
+<div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+        <div>
+            <h2 class="text-base font-bold text-gray-900">Recent Complaints</h2>
+            <p class="text-xs text-gray-500 mt-0.5">Your most recent problem reports and resolutions</p>
+        </div>
+        <a asp-controller="Complaint" asp-action="Index" class="text-xs font-semibold text-gray-700 hover:text-gray-900 flex items-center gap-1 transition-colors">
+            View All <span aria-hidden="true">&rarr;</span>
         </a>
     </div>
 
     @if (!Model.RecentComplaints.Any())
     {
-        <div style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
-            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📋</div>
-            <p style="font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem;">No complaints submitted yet</p>
-            <p style="font-size: 0.875rem; margin-bottom: 1.5rem;">Need to report an issue with classrooms, laboratories, or Wi-Fi?</p>
-            <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary">
+        <div class="text-center py-12 px-4">
+            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3 text-gray-400">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <p class="text-sm font-semibold text-gray-900 mb-1">No complaints submitted yet</p>
+            <p class="text-xs text-gray-500 max-w-sm mx-auto mb-4">Have an issue with classrooms, laboratories, sanitation, or Wi-Fi?</p>
+            <a asp-controller="Complaint" asp-action="Create" class="inline-flex items-center px-3.5 py-2 text-xs font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-sm">
                 Submit Your First Complaint
             </a>
         </div>
     }
     else
     {
-        <!-- Desktop Table -->
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
+        <!-- Desktop Table View -->
+        <div class="hidden md:block overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-left text-sm">
+                <thead class="bg-gray-50/75">
                     <tr>
-                        <th>Reference</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                        <th>Submitted</th>
-                        <th style="text-align: right;">Action</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Reference</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Location</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">Submitted</th>
+                        <th scope="col" class="py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-100 bg-white">
                     @foreach (var c in Model.RecentComplaints)
                     {
-                        var statusCss = c.Status.ToString().ToLower();
-                        <tr>
-                            <td><span class="complaint-ref">@c.ReferenceNumber</span></td>
-                            <td><strong>@c.Title</strong></td>
-                            <td>@c.CategoryName</td>
-                            <td>@c.Location</td>
-                            <td>
-                                <span class="status-badge @statusCss">
+                        var statusLower = c.Status.ToString().ToLower();
+                        var statusBadgeClasses = statusLower switch {
+                            "submitted" => "bg-slate-100 text-slate-700 border-slate-200",
+                            "underreview" => "bg-amber-50 text-amber-800 border-amber-200",
+                            "resolved" => "bg-emerald-50 text-emerald-800 border-emerald-200",
+                            "closed" => "bg-indigo-50 text-indigo-700 border-indigo-200",
+                            _ => "bg-gray-100 text-gray-700 border-gray-200"
+                        };
+
+                        <tr class="hover:bg-gray-50/60 transition-colors">
+                            <td class="py-3 px-4 font-mono font-semibold text-xs text-gray-900 whitespace-nowrap">
+                                @c.ReferenceNumber
+                            </td>
+                            <td class="py-3 px-4 font-medium text-gray-900 max-w-xs truncate">
+                                @c.Title
+                            </td>
+                            <td class="py-3 px-4 text-gray-600 text-xs">
+                                @c.CategoryName
+                            </td>
+                            <td class="py-3 px-4 text-gray-600 text-xs">
+                                @c.Location
+                            </td>
+                            <td class="py-3 px-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border @statusBadgeClasses">
                                     @c.Status
                                 </span>
                             </td>
-                            <td>@c.CreatedAt.ToString("dd MMM yyyy")</td>
-                            <td style="text-align: right;">
-                                <a asp-controller="Complaint" asp-action="Details" asp-route-id="@c.ComplaintId" class="btn btn-secondary btn-sm">
+                            <td class="py-3 px-4 text-gray-500 text-xs whitespace-nowrap">
+                                @c.CreatedAt.ToString("dd MMM yyyy")
+                            </td>
+                            <td class="py-3 px-4 text-right whitespace-nowrap">
+                                <a asp-controller="Complaint" asp-action="Details" asp-route-id="@c.ComplaintId" class="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors">
                                     View Details
                                 </a>
                             </td>
@@ -101,25 +135,49 @@
             </table>
         </div>
 
-        <!-- Mobile Cards -->
-        <div class="mobile-cards">
+        <!-- Mobile Cards View -->
+        <div class="md:hidden divide-y divide-gray-100 p-3 space-y-3">
             @foreach (var c in Model.RecentComplaints)
             {
-                var statusCss = c.Status.ToString().ToLower();
-                <div class="complaint-card">
-                    <div class="complaint-card-top">
-                        <span class="complaint-ref">@c.ReferenceNumber</span>
-                        <span class="status-badge @statusCss">@c.Status</span>
+                var statusLower = c.Status.ToString().ToLower();
+                var statusBadgeClasses = statusLower switch {
+                    "submitted" => "bg-slate-100 text-slate-700 border-slate-200",
+                    "underreview" => "bg-amber-50 text-amber-800 border-amber-200",
+                    "resolved" => "bg-emerald-50 text-emerald-800 border-emerald-200",
+                    "closed" => "bg-indigo-50 text-indigo-700 border-indigo-200",
+                    _ => "bg-gray-100 text-gray-700 border-gray-200"
+                };
+
+                <div class="bg-gray-50/50 rounded-lg border border-gray-200 p-3.5 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="font-mono font-semibold text-xs text-gray-900">@c.ReferenceNumber</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border @statusBadgeClasses">
+                            @c.Status
+                        </span>
                     </div>
-                    <div class="complaint-card-title">@c.Title</div>
-                    <div class="complaint-card-meta">
-                        <span>📁 @c.CategoryName</span>
-                        <span>📍 @c.Location</span>
-                        <span>🗓 @c.CreatedAt.ToString("dd MMM yyyy")</span>
+
+                    <h3 class="text-sm font-semibold text-gray-900 leading-snug">@c.Title</h3>
+
+                    <div class="text-xs text-gray-500 space-y-1">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-gray-400">Category:</span>
+                            <span class="font-medium text-gray-700">@c.CategoryName</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-gray-400">Location:</span>
+                            <span class="text-gray-700">@c.Location</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-gray-400">Filed:</span>
+                            <span class="text-gray-700">@c.CreatedAt.ToString("dd MMM yyyy")</span>
+                        </div>
                     </div>
-                    <a asp-controller="Complaint" asp-action="Details" asp-route-id="@c.ComplaintId" class="btn btn-secondary btn-block btn-sm">
-                        View Details
-                    </a>
+
+                    <div class="pt-2 border-t border-gray-200/80">
+                        <a asp-controller="Complaint" asp-action="Details" asp-route-id="@c.ComplaintId" class="w-full inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+                            View Details
+                        </a>
+                    </div>
                 </div>
             }
         </div>

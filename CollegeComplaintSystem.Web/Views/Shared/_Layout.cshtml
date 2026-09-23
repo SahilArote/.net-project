@@ -1,11 +1,18 @@
 @using CollegeComplaintSystem.Web.Common.Constants
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var isAdmin = User.IsInRole(AppRoles.Administrator);
+    var isStudent = User.IsInRole(AppRoles.Student);
+}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50 antialiased">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#111827" />
-    <meta name="description" content="College Complaint Management System - Submit and track facility and academic issues." />
+    <meta name="description" content="College Complaint Management System - Submit and track campus facility and academic issues." />
     <title>@ViewData["Title"] - College Complaint Portal</title>
 
     <!-- PWA Manifest & Icons -->
@@ -18,105 +25,347 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
+    <!-- Tailwind Stylesheet -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body>
+<body class="flex min-h-full flex-col font-sans text-gray-900 bg-slate-50">
     <!-- Offline Indicator Banner -->
-    <div id="offline-banner" role="alert">
-        <strong>Offline mode:</strong> You are currently disconnected. An active internet connection is required to submit complaints or perform actions.
+    <div id="offline-banner" class="hidden bg-amber-500 text-white text-xs font-medium py-2 px-4 text-center sticky top-0 z-50 shadow-sm" role="alert">
+        <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.166a1 1 0 111.414 1.414" />
+            </svg>
+            <span><strong>Offline mode:</strong> You are currently disconnected. An active internet connection is required to submit complaints or save changes.</span>
+        </div>
     </div>
 
-    <!-- Header Navigation -->
-    <header class="portal-header">
-        <div class="portal-nav-container">
-            <a href="/" class="brand-link">
-                <svg width="28" height="28" viewBox="0 0 512 512" fill="none">
-                    <rect width="512" height="512" rx="100" fill="#111827"/>
-                    <path d="M120 180h272M120 256h272M120 332h180" stroke="#F8FAFC" stroke-width="36" stroke-linecap="round"/>
-                    <circle cx="370" cy="332" r="36" fill="#3B82F6"/>
-                </svg>
-                <span>College Complaints</span>
-                @if (User.IsInRole(AppRoles.Administrator))
-                {
-                    <span class="brand-badge">ADMIN</span>
-                }
-            </a>
+    @if (isAuthenticated)
+    {
+        <!-- Authenticated Portal: Desktop Sidebar & Mobile Drawer -->
+        <div class="flex min-h-screen">
+            <!-- 1. Desktop Fixed Sidebar -->
+            <aside class="hidden md:flex md:w-64 md:flex-col fixed inset-y-0 z-40 bg-white border-r border-gray-200 shadow-2xs">
+                <!-- Sidebar Brand Header -->
+                <div class="h-16 px-5 flex items-center justify-between border-b border-gray-200">
+                    <a href="/" class="flex items-center gap-2.5 text-gray-900 hover:opacity-90 transition-opacity">
+                        <svg class="w-7 h-7 rounded-lg shadow-2xs shrink-0" viewBox="0 0 512 512" fill="none">
+                            <rect width="512" height="512" rx="100" fill="#111827"/>
+                            <path d="M120 180h272M120 256h272M120 332h180" stroke="#F8FAFC" stroke-width="36" stroke-linecap="round"/>
+                            <circle cx="370" cy="332" r="36" fill="#3B82F6"/>
+                        </svg>
+                        <div class="leading-tight">
+                            <span class="font-bold text-sm tracking-tight text-gray-900 block">College Complaints</span>
+                        </div>
+                    </a>
 
-            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu">
-                ☰
-            </button>
-
-            <ul class="nav-links" id="nav-links">
-                @if (User.Identity?.IsAuthenticated == true)
-                {
-                    @if (User.IsInRole(AppRoles.Administrator))
+                    @if (isAdmin)
                     {
-                        <li><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
-                        <li><a asp-controller="Complaint" asp-action="Create">+ New Complaint</a></li>
-                        <li><a asp-controller="Admin" asp-action="Complaints">Complaints</a></li>
-                        <li><a asp-controller="Admin" asp-action="Students">Students</a></li>
-                        <li><a asp-controller="Category" asp-action="Index">Categories</a></li>
-                        <li><a asp-controller="Report" asp-action="Index">Reports</a></li>
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-gray-900 text-white">
+                            Admin
+                        </span>
                     }
-                    else if (User.IsInRole(AppRoles.Student))
+                    else if (isStudent)
                     {
-                        <li><a asp-controller="Student" asp-action="Dashboard">Dashboard</a></li>
-                        <li><a asp-controller="Complaint" asp-action="Create">+ Submit Complaint</a></li>
-                        <li><a asp-controller="Complaint" asp-action="Index">My Complaints</a></li>
-                        <li><a asp-controller="Student" asp-action="Profile">Profile</a></li>
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase bg-slate-100 text-slate-700 border border-slate-200">
+                            Student
+                        </span>
                     }
+                </div>
 
-                    <li class="nav-auth">
-                        <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                <!-- Sidebar Nav Items -->
+                <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                    @if (isAdmin)
+                    {
+                        var isDash = currentController == "Admin" && currentAction == "Dashboard";
+                        var isNew = currentController == "Complaint" && currentAction == "Create";
+                        var isComplaints = currentController == "Admin" && (currentAction == "Complaints" || currentAction == "Details");
+                        var isStudents = currentController == "Admin" && currentAction == "Students";
+                        var isCategories = currentController == "Category";
+                        var isReports = currentController == "Report";
+
+                        <div class="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">Administration</div>
+
+                        <a asp-controller="Admin" asp-action="Dashboard" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isDash ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isDash ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                            </svg>
+                            Dashboard
+                        </a>
+
+                        <a asp-controller="Complaint" asp-action="Create" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isNew ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isNew ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            + New Complaint
+                        </a>
+
+                        <a asp-controller="Admin" asp-action="Complaints" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isComplaints ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isComplaints ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                            </svg>
+                            Complaints
+                        </a>
+
+                        <a asp-controller="Admin" asp-action="Students" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isStudents ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isStudents ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                            Students
+                        </a>
+
+                        <a asp-controller="Category" asp-action="Index" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isCategories ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isCategories ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                            </svg>
+                            Categories
+                        </a>
+
+                        <a asp-controller="Report" asp-action="Index" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isReports ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isReports ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                            Reports
+                        </a>
+                    }
+                    else if (isStudent)
+                    {
+                        var isDash = currentController == "Student" && currentAction == "Dashboard";
+                        var isNew = currentController == "Complaint" && currentAction == "Create";
+                        var isComplaints = currentController == "Complaint" && (currentAction == "Index" || currentAction == "Details" || currentAction == "Edit");
+                        var isProfile = currentController == "Student" && currentAction == "Profile";
+
+                        <div class="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">Student Portal</div>
+
+                        <a asp-controller="Student" asp-action="Dashboard" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isDash ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isDash ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                            </svg>
+                            Dashboard
+                        </a>
+
+                        <a asp-controller="Complaint" asp-action="Create" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isNew ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isNew ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Submit Complaint
+                        </a>
+
+                        <a asp-controller="Complaint" asp-action="Index" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isComplaints ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isComplaints ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                            </svg>
+                            My Complaints
+                        </a>
+
+                        <a asp-controller="Student" asp-action="Profile" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg transition-colors @(isProfile ? "bg-gray-900 text-white font-semibold shadow-2xs" : "text-gray-700 hover:text-gray-900 hover:bg-gray-100 font-medium")">
+                            <svg class="w-4 h-4 shrink-0 @(isProfile ? "text-white" : "text-gray-400")" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            Profile
+                        </a>
+                    }
+                </nav>
+
+                <!-- Sidebar Footer: User / Sign Out -->
+                <div class="p-3 border-t border-gray-200">
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="w-full">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                            <svg class="w-4 h-4 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            </svg>
+                            Sign Out
+                        </button>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- 2. Mobile Drawer Navigation Overlay -->
+            <div id="mobile-sidebar" class="hidden md:hidden fixed inset-0 z-50">
+                <!-- Backdrop -->
+                <div id="mobile-sidebar-backdrop" class="fixed inset-0 bg-gray-900/50 backdrop-blur-2xs transition-opacity"></div>
+
+                <!-- Panel -->
+                <div class="fixed inset-y-0 left-0 w-64 bg-white shadow-2xl flex flex-col z-50">
+                    <div class="h-16 px-5 flex items-center justify-between border-b border-gray-200">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm tracking-tight text-gray-900">College Complaints</span>
+                            @if (isAdmin)
+                            {
+                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-gray-900 text-white">Admin</span>
+                            }
+                            else if (isStudent)
+                            {
+                                <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-slate-100 text-slate-700 border border-slate-200">Student</span>
+                            }
+                        </div>
+                        <button type="button" id="mobile-sidebar-close" class="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100" aria-label="Close navigation">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                        @if (isAdmin)
+                        {
+                            <a asp-controller="Admin" asp-action="Dashboard" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">Dashboard</a>
+                            <a asp-controller="Complaint" asp-action="Create" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">+ New Complaint</a>
+                            <a asp-controller="Admin" asp-action="Complaints" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">Complaints</a>
+                            <a asp-controller="Admin" asp-action="Students" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">Students</a>
+                            <a asp-controller="Category" asp-action="Index" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">Categories</a>
+                            <a asp-controller="Report" asp-action="Index" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">Reports</a>
+                        }
+                        else if (isStudent)
+                        {
+                            <a asp-controller="Student" asp-action="Dashboard" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">Dashboard</a>
+                            <a asp-controller="Complaint" asp-action="Create" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">+ Submit Complaint</a>
+                            <a asp-controller="Complaint" asp-action="Index" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">My Complaints</a>
+                            <a asp-controller="Student" asp-action="Profile" class="flex items-center gap-2.5 px-3 py-2 text-xs rounded-lg text-gray-700 hover:bg-gray-100 font-medium">Profile</a>
+                        }
+                    </nav>
+
+                    <div class="p-3 border-t border-gray-200">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="w-full">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-secondary btn-sm">Sign Out</button>
+                            <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                Sign Out
+                            </button>
                         </form>
-                    </li>
-                }
-                else
-                {
-                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-controller="Account" asp-action="Login">Sign In</a></li>
-                    <li><a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-sm">Student Registration</a></li>
-                }
-            </ul>
-        </div>
-    </header>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Main Content Area -->
-    <main role="main">
-        <div class="container">
+            <!-- 3. Main Content Wrapper (Shifted right by sidebar width on desktop) -->
+            <div class="flex-1 md:pl-64 flex flex-col min-h-screen">
+                <!-- Mobile Sticky Header with Hamburger -->
+                <header class="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200 h-14 px-4 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="mobile-sidebar-open" class="p-2 -ml-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none" aria-label="Open sidebar menu">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        <span class="font-bold text-sm text-gray-900">College Complaints</span>
+                    </div>
+
+                    <div>
+                        @if (isAdmin)
+                        {
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-gray-900 text-white">Admin</span>
+                        }
+                        else if (isStudent)
+                        {
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-slate-100 text-slate-700 border border-slate-200">Student</span>
+                        }
+                    </div>
+                </header>
+
+                <!-- Page Content Area -->
+                <main role="main" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                    <!-- Flash Notification Alerts -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="mb-6 rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-800 flex items-center justify-between shadow-2xs" role="alert">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span class="font-medium">@TempData["SuccessMessage"]</span>
+                            </div>
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-800 flex items-center justify-between shadow-2xs" role="alert">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                <span class="font-medium">@TempData["ErrorMessage"]</span>
+                            </div>
+                        </div>
+                    }
+                    @if (TempData["InfoMessage"] != null)
+                    {
+                        <div class="mb-6 rounded-lg bg-blue-50 border border-blue-200 p-4 text-sm text-blue-800 flex items-center justify-between shadow-2xs" role="alert">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="font-medium">@TempData["InfoMessage"]</span>
+                            </div>
+                        </div>
+                    }
+
+                    @RenderBody()
+                </main>
+
+                <!-- Footer -->
+                <footer class="bg-white border-t border-gray-200 mt-auto py-5 px-4 sm:px-6 lg:px-8 text-xs text-gray-500 text-center">
+                    <p>&copy; @DateTime.UtcNow.Year College Complaint Management System. Built for students and faculty.</p>
+                </footer>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Unauthenticated Public Layout: Clean Header + Body + Footer -->
+        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <a href="/" class="flex items-center gap-2.5 text-gray-900 hover:opacity-90 transition-opacity">
+                        <svg class="w-8 h-8 rounded-lg shadow-2xs" viewBox="0 0 512 512" fill="none">
+                            <rect width="512" height="512" rx="100" fill="#111827"/>
+                            <path d="M120 180h272M120 256h272M120 332h180" stroke="#F8FAFC" stroke-width="36" stroke-linecap="round"/>
+                            <circle cx="370" cy="332" r="36" fill="#3B82F6"/>
+                        </svg>
+                        <span class="font-bold text-base sm:text-lg tracking-tight text-gray-900">College Complaints</span>
+                    </a>
+
+                    <nav class="flex items-center gap-2">
+                        <a asp-controller="Home" asp-action="Index" class="px-3 py-1.5 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors">Home</a>
+                        <a asp-controller="Account" asp-action="Login" class="px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 hover:text-gray-900 transition-colors">Sign In</a>
+                        <a asp-controller="Account" asp-action="Register" class="inline-flex items-center px-3.5 py-1.5 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 shadow-sm transition-colors">
+                            Register
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main role="main" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             <!-- Flash Notification Alerts -->
             @if (TempData["SuccessMessage"] != null)
             {
-                <div class="alert alert-success" role="alert">
-                    <span>@TempData["SuccessMessage"]</span>
+                <div class="mb-6 rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-800 flex items-center justify-between shadow-2xs" role="alert">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="font-medium">@TempData["SuccessMessage"]</span>
+                    </div>
                 </div>
             }
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-danger" role="alert">
-                    <span>@TempData["ErrorMessage"]</span>
-                </div>
-            }
-            @if (TempData["InfoMessage"] != null)
-            {
-                <div class="alert alert-info" role="alert">
-                    <span>@TempData["InfoMessage"]</span>
+                <div class="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-800 flex items-center justify-between shadow-2xs" role="alert">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span class="font-medium">@TempData["ErrorMessage"]</span>
+                    </div>
                 </div>
             }
 
             @RenderBody()
-        </div>
-    </main>
+        </main>
 
-    <!-- Footer -->
-    <footer class="portal-footer">
-        <div class="container" style="padding-top: 0; padding-bottom: 0;">
+        <footer class="bg-white border-t border-gray-200 mt-auto py-6 px-4 text-xs text-gray-500 text-center">
             <p>&copy; @DateTime.UtcNow.Year College Complaint Management System. Built for students and faculty.</p>
-        </div>
-    </footer>
+        </footer>
+    }
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

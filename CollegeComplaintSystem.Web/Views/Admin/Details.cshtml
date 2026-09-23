@@ -1,164 +1,194 @@
 @model AdminComplaintDetailsViewModel
 @{
     ViewData["Title"] = $"Review Complaint {Model.ReferenceNumber}";
-    var statusCss = Model.CurrentStatus.ToString().ToLower();
+    var statusLower = Model.CurrentStatus.ToString().ToLower();
+    var statusBadgeClasses = statusLower switch {
+        "submitted" => "bg-slate-100 text-slate-700 border-slate-200",
+        "underreview" => "bg-amber-50 text-amber-800 border-amber-200",
+        "resolved" => "bg-emerald-50 text-emerald-800 border-emerald-200",
+        "closed" => "bg-indigo-50 text-indigo-700 border-indigo-200",
+        _ => "bg-gray-100 text-gray-700 border-gray-200"
+    };
 }
 
-<div style="max-width: 900px; margin: 1.5rem auto;">
-    <div style="margin-bottom: 1.25rem;">
-        <a asp-action="Complaints" class="btn btn-secondary btn-sm">
-            &larr; Back to Complaints List
+<div class="max-w-4xl mx-auto py-6 sm:py-8 space-y-6">
+    <!-- Back Navigation -->
+    <div>
+        <a asp-action="Complaints" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-2xs">
+            <span>&larr;</span> Back to Complaints List
         </a>
     </div>
 
     <!-- Main Card -->
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sm:p-8 space-y-6">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 border-b border-gray-200 pb-5">
             <div>
-                <span class="complaint-ref" style="font-size: 1.1rem;">@Model.ReferenceNumber</span>
-                <h1 style="font-size: 1.6rem; margin: 0.25rem 0 0 0;">@Model.Title</h1>
+                <span class="font-mono font-semibold text-xs text-gray-500 block mb-1">@Model.ReferenceNumber</span>
+                <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 leading-snug">@Model.Title</h1>
             </div>
             <div>
-                <span class="status-badge @statusCss" style="font-size: 0.95rem; padding: 0.4rem 0.9rem;">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border @statusBadgeClasses">
                     @Model.CurrentStatus
                 </span>
             </div>
         </div>
 
         <!-- Student & Category Information Grid -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 1.75rem; background-color: var(--bg-color); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-gray-50 rounded-xl p-4 sm:p-5 border border-gray-100 text-xs">
             <div>
-                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Student Full Name</span>
-                <div style="font-weight: 600;">@Model.StudentName</div>
+                <span class="font-semibold uppercase tracking-wider text-gray-400 block mb-0.5">Student Full Name</span>
+                <span class="font-semibold text-gray-900 text-sm">@Model.StudentName</span>
             </div>
             <div>
-                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">College ID</span>
-                <div style="font-weight: 600;">@Model.CollegeId</div>
+                <span class="font-semibold uppercase tracking-wider text-gray-400 block mb-0.5">College ID</span>
+                <span class="font-mono font-semibold text-gray-900 text-sm">@Model.CollegeId</span>
             </div>
             <div>
-                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Student Email</span>
-                <div><a href="mailto:@Model.StudentEmail">@Model.StudentEmail</a></div>
+                <span class="font-semibold uppercase tracking-wider text-gray-400 block mb-0.5">Student Email</span>
+                <a href="mailto:@Model.StudentEmail" class="font-medium text-blue-600 hover:underline text-sm truncate block">
+                    @Model.StudentEmail
+                </a>
             </div>
             <div>
-                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Category</span>
-                <div style="font-weight: 600;">@Model.CategoryName</div>
+                <span class="font-semibold uppercase tracking-wider text-gray-400 block mb-0.5">Category</span>
+                <span class="font-semibold text-gray-900 text-sm">@Model.CategoryName</span>
             </div>
             <div>
-                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Location</span>
-                <div style="font-weight: 600;">@Model.Location</div>
+                <span class="font-semibold uppercase tracking-wider text-gray-400 block mb-0.5">Location</span>
+                <span class="font-semibold text-gray-900 text-sm">@Model.Location</span>
             </div>
             <div>
-                <span class="form-label" style="font-size: 0.775rem; color: var(--text-muted); text-transform: uppercase;">Submitted Timestamp</span>
-                <div style="color: var(--text-secondary);">@Model.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")</div>
+                <span class="font-semibold uppercase tracking-wider text-gray-400 block mb-0.5">Submitted Timestamp</span>
+                <span class="text-gray-700 text-sm">@Model.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")</span>
             </div>
         </div>
 
-        <!-- Description -->
-        <div style="margin-bottom: 2rem;">
-            <h3 style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 0.75rem;">Description</h3>
-            <div style="line-height: 1.6; white-space: pre-wrap; background: #FFFFFF; padding: 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">@Model.Description</div>
+        <!-- Description Box -->
+        <div>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Description</h2>
+            <div class="text-sm text-gray-800 leading-relaxed bg-white border border-gray-200 rounded-lg p-4 whitespace-pre-wrap">@Model.Description</div>
         </div>
 
-        <!-- Attached Image -->
+        <!-- Attached Photographic Evidence -->
         @if (!string.IsNullOrEmpty(Model.ImageUrl))
         {
-            <div style="margin-bottom: 2rem;">
-                <h3 style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 0.75rem;">Supporting Photographic Evidence</h3>
-                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; max-width: 550px;">
-                    <a href="@Model.ImageUrl" target="_blank" title="Click to view full size">
-                        <img src="@Model.ImageUrl" alt="Evidence photo" style="width: 100%; max-height: 400px; object-fit: contain; background: #000000; display: block;" />
+            <div>
+                <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Attached Photo Evidence</h2>
+                <div class="rounded-xl border border-gray-200 overflow-hidden bg-black max-w-lg shadow-2xs">
+                    <a href="@Model.ImageUrl" target="_blank" rel="noopener noreferrer" title="Click to view full resolution" class="block group relative">
+                        <img src="@Model.ImageUrl" alt="Evidence photo" class="w-full max-h-80 object-contain mx-auto" />
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-medium transition-opacity">
+                            Click to open full resolution ↗
+                        </div>
                     </a>
                 </div>
             </div>
         }
 
         <!-- Status Management Action Box (Enforcing strict state machine) -->
-        <div style="background-color: var(--primary-light); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem;">
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Administrative Action</h3>
-            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                Lifecycle state: <strong>@Model.CurrentStatus</strong>. Moving forward will update the complaint audit log and trigger an automated email notification to the student.
-            </p>
+        <div class="rounded-xl border border-gray-200 bg-gray-50/70 p-5 sm:p-6 space-y-4">
+            <div>
+                <h2 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Administrative Action</h2>
+                <p class="text-xs text-gray-500 mt-0.5">
+                    Current milestone: <strong class="font-semibold text-gray-900">@Model.CurrentStatus</strong>. Updating state records an audit entry and automatically notifies the student.
+                </p>
+            </div>
 
             @if (Model.CanMarkUnderReview)
             {
-                <form asp-action="UpdateStatus" method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+                <form asp-action="UpdateStatus" method="post" class="space-y-3.5">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="complaintId" value="@Model.ComplaintId" />
                     <input type="hidden" name="newStatus" value="@ComplaintStatus.UnderReview" />
 
                     <div>
-                        <label class="form-label" for="notes">Review Notes (Optional)</label>
-                        <input type="text" id="notes" name="notes" class="form-control" placeholder="e.g. Assigned to maintenance team for inspection..." />
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1" for="notes">Review Notes (Optional)</label>
+                        <input type="text" id="notes" name="notes" class="w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" placeholder="e.g. Assigned to maintenance team for inspection..." />
                     </div>
 
                     <div>
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            🔍 Mark as Under Review
+                        <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors shadow-sm">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            Mark as Under Review
                         </button>
                     </div>
                 </form>
             }
             else if (Model.CanMarkResolved)
             {
-                <form asp-action="UpdateStatus" method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+                <form asp-action="UpdateStatus" method="post" class="space-y-3.5">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="complaintId" value="@Model.ComplaintId" />
                     <input type="hidden" name="newStatus" value="@ComplaintStatus.Resolved" />
 
                     <div>
-                        <label class="form-label" for="notes">Resolution Notes (Optional)</label>
-                        <input type="text" id="notes" name="notes" class="form-control" placeholder="e.g. Wi-Fi router replaced and verified..." />
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1" for="notes">Resolution Notes (Optional)</label>
+                        <input type="text" id="notes" name="notes" class="w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 transition-colors" placeholder="e.g. Wi-Fi router replaced and verified working..." />
                     </div>
 
                     <div>
-                        <button type="submit" class="btn btn-success btn-lg">
-                            ✓ Mark as Resolved
+                        <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors shadow-sm">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Mark as Resolved
                         </button>
                     </div>
                 </form>
             }
             else if (Model.CanClose)
             {
-                <form asp-action="UpdateStatus" method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+                <form asp-action="UpdateStatus" method="post" class="space-y-3.5">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="complaintId" value="@Model.ComplaintId" />
                     <input type="hidden" name="newStatus" value="@ComplaintStatus.Closed" />
 
                     <div>
-                        <label class="form-label" for="notes">Closing Remarks (Optional)</label>
-                        <input type="text" id="notes" name="notes" class="form-control" placeholder="e.g. Confirmed resolved by facility head." />
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1" for="notes">Closing Remarks (Optional)</label>
+                        <input type="text" id="notes" name="notes" class="w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors" placeholder="e.g. Confirmed resolution with department head." />
                     </div>
 
                     <div>
-                        <button type="submit" class="btn btn-secondary btn-lg">
-                            🔒 Close Complaint
+                        <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-2xs">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            Close Complaint
                         </button>
                     </div>
                 </form>
             }
             else
             {
-                <div style="font-weight: 500; color: var(--text-secondary);">
-                    This complaint is marked as <strong>Closed</strong>. No further status changes are permissible.
+                <div class="text-xs text-gray-500 font-medium flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    This complaint is closed. No further status changes are permissible.
                 </div>
             }
         </div>
 
         <!-- Status Timeline -->
-        <div>
-            <h3 style="font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 1rem;">Audit History Timeline</h3>
-            <div class="timeline">
+        <div class="pt-4 border-t border-gray-200">
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-4">Audit History Timeline</h2>
+            <div class="timeline-track pl-6 space-y-4">
                 @foreach (var h in Model.StatusHistories)
                 {
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-time">@h.ChangedAt.ToString("dd MMM yyyy, hh:mm tt")</div>
-                        <div class="timeline-content">
-                            <strong>@h.NewStatus</strong>
-                            <span style="color: var(--text-secondary);"> (by @h.ChangedByName)</span>
+                    <div class="relative">
+                        <div class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-white border-2 border-gray-900"></div>
+                        <div class="text-[11px] font-mono text-gray-400">@h.ChangedAt.ToString("dd MMM yyyy, hh:mm tt")</div>
+                        <div class="text-xs font-medium text-gray-900 mt-0.5">
+                            <span class="font-semibold">@h.NewStatus</span>
+                            <span class="text-gray-500 font-normal"> (by @h.ChangedByName)</span>
                             @if (!string.IsNullOrEmpty(h.Notes))
                             {
-                                <div style="margin-top: 0.25rem; font-style: italic; color: var(--text-secondary);">"@h.Notes"</div>
+                                <div class="mt-1 text-gray-600 font-normal italic bg-gray-50 p-2 rounded border border-gray-100">
+                                    "@h.Notes"
+                                </div>
                             }
                         </div>
                     </div>
