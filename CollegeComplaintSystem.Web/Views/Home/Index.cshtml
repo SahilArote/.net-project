@@ -17,17 +17,26 @@
         A fast, transparent way for students to report infrastructure, laboratory, sanitation, and administrative issues. Submit reports with photo evidence and monitor real-time resolution progress.
     </p>
 
-    <div class="flex items-center justify-center gap-3 sm:gap-4 flex-wrap mb-14 sm:mb-20">
-        <a asp-controller="Account" asp-action="Register" class="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 shadow-sm transition-colors w-full sm:w-auto">
+    <!-- Hero Action Buttons -->
+    <div class="flex items-center justify-center gap-3 sm:gap-4 flex-wrap mb-14 sm:mb-18">
+        <a asp-controller="Account" asp-action="Register" class="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 shadow-sm transition-all w-full sm:w-auto">
             Register as Student
         </a>
-        <a asp-controller="Account" asp-action="Login" class="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors w-full sm:w-auto">
+        <a asp-controller="Account" asp-action="Login" class="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all w-full sm:w-auto">
             Sign In to Portal
         </a>
+        <!-- Main Download/Install Button -->
+        <button type="button" class="pwa-install-trigger inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg shadow-sm hover:shadow-md transition-all w-full sm:w-auto cursor-pointer group">
+            <svg class="w-4 h-4 text-white transition-transform group-hover:translate-y-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span class="pwa-btn-text">Download App</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-blue-500/60 text-white">PWA</span>
+        </button>
     </div>
 
     <!-- Quick Highlights -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mb-12 sm:mb-16">
         <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:border-gray-300 transition-colors">
             <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4 text-gray-900">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,6 +72,58 @@
             <p class="text-sm text-gray-500 leading-relaxed">
                 Receive instant status updates through four distinct milestones: Submitted, Under Review, Resolved, and Closed.
             </p>
+        </div>
+    </div>
+
+    <!-- Dedicated PWA App Download Showcase Section -->
+    <div class="bg-gradient-to-br from-gray-900 via-slate-900 to-indigo-950 rounded-2xl p-6 sm:p-10 text-white shadow-xl text-left relative overflow-hidden">
+        <div class="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+            <div class="max-w-xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold mb-4 border border-blue-400/30">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    <span>Progressive Web App &bull; Works On All Devices</span>
+                </div>
+                <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3">
+                    Download College Complaints on Your Device
+                </h3>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                    Install the application directly from your browser. Get 1-tap home screen access, offline support when disconnected, camera upload, and instant grievance status tracking without taking up app store storage.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-300">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Zero Store Download</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Offline Support</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Fast & Lightweight</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row lg:flex-col gap-3 w-full sm:w-auto shrink-0">
+                <button type="button" class="pwa-install-trigger inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all cursor-pointer">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span class="pwa-btn-text">Download App Now</span>
+                </button>
+                <span id="pwa-platform-indicator" class="text-center text-xs text-slate-400">
+                    Instant install for Windows, Android, iOS & Mac
+                </span>
+            </div>
         </div>
     </div>
 </div>

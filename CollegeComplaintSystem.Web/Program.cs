@@ -142,7 +142,23 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        var fileName = ctx.File.Name;
+        if (fileName.Equals("service-worker.js", StringComparison.OrdinalIgnoreCase))
+        {
+            ctx.Context.Response.Headers.Append("Cache-Control", "no-cache, no-store, must-revalidate");
+            ctx.Context.Response.Headers.Append("Service-Worker-Allowed", "/");
+        }
+        else if (fileName.Equals("manifest.json", StringComparison.OrdinalIgnoreCase))
+        {
+            ctx.Context.Response.Headers.Append("Cache-Control", "no-cache");
+            ctx.Context.Response.ContentType = "application/manifest+json";
+        }
+    }
+});
 
 app.UseRouting();
 

@@ -17,8 +17,15 @@
 
     <!-- PWA Manifest & Icons -->
     <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#111827" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="College Complaints" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
-    <link rel="apple-touch-icon" href="/icons/icon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -324,6 +331,12 @@
                     </a>
 
                     <nav class="flex items-center gap-2">
+                        <button type="button" class="pwa-install-trigger hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition-colors cursor-pointer" title="Download & Install Application">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            <span class="pwa-btn-text">Download App</span>
+                        </button>
                         <a asp-controller="Home" asp-action="Index" class="px-3 py-1.5 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors">Home</a>
                         <a asp-controller="Account" asp-action="Login" class="px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 hover:text-gray-900 transition-colors">Sign In</a>
                         <a asp-controller="Account" asp-action="Register" class="inline-flex items-center px-3.5 py-1.5 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 shadow-sm transition-colors">
@@ -366,6 +379,37 @@
             <p>&copy; @DateTime.UtcNow.Year College Complaint Management System. Built for students and faculty.</p>
         </footer>
     }
+
+    <!-- PWA Install Guide Modal -->
+    <div id="pwa-guide-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-xs" role="dialog" aria-modal="true" aria-labelledby="pwa-modal-title">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-gray-100 relative">
+            <button type="button" id="pwa-modal-close" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" aria-label="Close modal">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <div class="flex items-center gap-3.5 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gray-900 flex items-center justify-center p-2 shadow-xs shrink-0">
+                    <img src="/icons/icon-192.png" alt="Portal App Logo" class="w-8 h-8 rounded-md" />
+                </div>
+                <div>
+                    <h3 id="pwa-modal-title" class="font-bold text-base text-gray-900 leading-tight">College Complaints App</h3>
+                    <p class="text-xs text-gray-500">Official Progressive Web Application</p>
+                </div>
+            </div>
+
+            <div id="pwa-guide-content" class="text-sm text-gray-600 space-y-3 mb-5 border-y border-gray-100 py-4">
+                <!-- Dynamically populated by site.js based on user OS/browser -->
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button type="button" id="pwa-guide-action-btn" class="w-full py-2.5 px-4 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg transition-colors text-center cursor-pointer shadow-sm">
+                    Understood
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

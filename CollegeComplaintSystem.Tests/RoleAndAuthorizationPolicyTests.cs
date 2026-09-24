@@ -21,7 +21,7 @@ public class RoleAndAuthorizationPolicyTests
     [InlineData(typeof(CategoryController), AppRoles.Administrator)]
     [InlineData(typeof(ReportController), AppRoles.Administrator)]
     [InlineData(typeof(StudentController), AppRoles.Student)]
-    [InlineData(typeof(ComplaintController), AppRoles.Student)]
+    [InlineData(typeof(ComplaintController), "Student,Administrator")]
     public void Controllers_AreProtectedWithAppropriateRoles(Type controllerType, string expectedRole)
     {
         var authAttribute = controllerType.GetCustomAttribute<AuthorizeAttribute>();

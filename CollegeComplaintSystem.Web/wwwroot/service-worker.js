@@ -1,21 +1,34 @@
-const CACHE_NAME = 'ccms-cache-v1';
+const CACHE_NAME = 'ccms-pwa-v2';
 const PRECACHE_ASSETS = [
-    '/',
     '/Home/Offline',
+    '/manifest.json',
     '/css/site.css',
     '/js/site.js',
-    '/manifest.json'
+    '/icons/icon.svg',
+    '/icons/icon-192.png',
+    '/icons/icon-512.png',
+    '/icons/apple-touch-icon.png',
+    '/favicon.ico'
 ];
 
+// Install: precache essential offline shell assets
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(PRECACHE_ASSETS);
+        caches.open(CACHE_NAME).then(async cache => {
+            const results = await Promise.allSettled(
+                PRECACHE_ASSETS.map(asset => cache.add(asset))
+            );
+            results.forEach((res, i) => {
+                if (res.status === 'rejected') {
+                    console.warn(`[SW] Precache failed for ${PRECACHE_ASSETS[i]}:`, res.reason);
+                }
+            });
         })
     );
     self.skipWaiting();
 });
 
+// Activate: clean up outdated caches
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(keys => {
@@ -26,50 +39,85 @@ self.addEventListener('activate', event => {
                     }
                 })
             );
-        })
+        }).then(() => self.clients.claim())
     );
-    self.clients.claim();
 });
 
+// Fetch: network-first for navigation with offline fallback, cache-first for static assets
 self.addEventListener('fetch', event => {
-    // Only intercept GET requests
+    // Only handle GET requests
     if (event.request.method !== 'GET') {
         return;
     }
 
     const url = new URL(event.request.url);
 
-    // Static assets: cache-first
-    if (url.pathname.startsWith('/css/') || url.pathname.startsWith('/js/') || url.pathname.startsWith('/icons/')) {
+    // Skip non-HTTP(S) schemes
+    if (!url.protocol.startsWith('http')) {
+        return;
+    }
+
+    // Static assets (CSS, JS, images, icons, fonts, manifest): Stale-While-Revalidate
+    const isStaticAsset = 
+        url.pathname.startsWith('/css/') ||
+        url.pathname.startsWith('/js/') ||
+        url.pathname.startsWith('/icons/') ||
+        url.pathname.startsWith('/lib/') ||
+        url.pathname === '/manifest.json' ||
+        url.pathname === '/favicon.ico' ||
+        /\.(png|jpg|jpeg|svg|webp|gif|woff2?|ttf|eot)$/i.test(url.pathname);
+
+    if (isStaticAsset) {
         event.respondWith(
             caches.match(event.request).then(cachedResponse => {
-                return cachedResponse || fetch(event.request).then(response => {
-                    return caches.open(CACHE_NAME).then(cache => {
-                        cache.put(event.request, response.clone());
-                        return response;
-                    });
-                });
+                const networkFetch = fetch(event.request).then(networkResponse => {
+                    if (networkResponse && networkResponse.status === 200) {
+                        const responseClone = networkResponse.clone();
+                        caches.open(CACHE_NAME).then(cache => {
+                            cache.put(event.request, responseClone);
+                        });
+                    }
+                    return networkResponse;
+                }).catch(() => cachedResponse);
+
+                return cachedResponse || networkFetch;
             })
         );
         return;
     }
 
-    // Navigation and dynamic pages: network-first, with fallback to offline page
+    // Navigation and HTML documents: Network-first, fallback to /Home/Offline
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request)
+                .catch(() => {
+                    return caches.match('/Home/Offline').then(cachedOffline => {
+                        if (cachedOffline) {
+                            return cachedOffline;
+                        }
+                        return new Response(
+                            '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Offline - College Complaints</title><style>body{font-family:sans-serif;text-align:center;padding:3rem 1rem;background:#F8FAFC;color:#111827;}h1{font-size:1.5rem;font-weight:700;}p{color:#64748B;max-width:400px;margin:1rem auto;}a{display:inline-block;margin-top:1.5rem;background:#111827;color:#fff;padding:0.75rem 1.5rem;border-radius:0.5rem;text-decoration:none;font-weight:600;}</style></head><body><h1>You are currently offline</h1><p>An active internet connection is required. Please check your network and try again.</p><a href="/">Retry Connection</a></body></html>',
+                            {
+                                status: 503,
+                                statusText: 'Service Unavailable',
+                                headers: { 'Content-Type': 'text/html; charset=utf-8' }
+                            }
+                        );
+                    });
+                })
+        );
+        return;
+    }
+
+    // Other requests: Network with cache fallback
     event.respondWith(
-        fetch(event.request)
-            .then(networkResponse => {
-                return networkResponse;
-            })
-            .catch(() => {
-                return caches.match(event.request).then(cachedResponse => {
-                    if (cachedResponse) {
-                        return cachedResponse;
-                    }
-                    if (event.request.mode === 'navigate') {
-                        return caches.match('/Home/Offline');
-                    }
-                    return new Response('Network unavailable', { status: 503, statusText: 'Service Unavailable' });
-                });
-            })
+        fetch(event.request).catch(() => caches.match(event.request))
     );
+});
+
+// Support manual skipWaiting
+self.addEventListener('message', event => {
+    if (event.data && event.data.action === 'skipWaiting') {
+        self.skipWaiting();
+    }
 });

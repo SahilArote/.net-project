@@ -1,10 +1,160 @@
-// PWA Service Worker Registration
+// ==========================================
+// 1. PWA Service Worker & Install Management
+// ==========================================
+let deferredInstallPrompt = null;
+
+// Register service worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
-            .then(reg => console.log('CCMS Service Worker registered', reg))
-            .catch(err => console.log('Service Worker registration failed', err));
+            .then(reg => {
+                console.log('[PWA] Service Worker registered with scope:', reg.scope);
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    if (newWorker) {
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('[PWA] New content is available; please refresh.');
+                            }
+                        });
+                    }
+                });
+            })
+            .catch(err => console.error('[PWA] Service Worker registration failed:', err));
     });
+}
+
+// Detect if running inside installed standalone PWA
+function isPwaStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true ||
+           document.referrer.includes('android-app://');
+}
+
+// Detect client platform
+function getClientPlatform() {
+    const ua = navigator.userAgent || '';
+    if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return 'ios';
+    if (/android/i.test(ua)) return 'android';
+    if (/Macintosh|Mac OS X/i.test(ua)) return 'mac';
+    if (/Windows/i.test(ua)) return 'windows';
+    return 'other';
+}
+
+// Update UI elements to reflect installed state
+function updatePwaInstalledUI() {
+    document.querySelectorAll('.pwa-install-trigger').forEach(btn => {
+        const textSpan = btn.querySelector('.pwa-btn-text');
+        if (textSpan) textSpan.textContent = 'App Installed';
+        btn.classList.add('opacity-80');
+        btn.setAttribute('aria-label', 'Application is installed');
+    });
+
+    const platformIndicator = document.getElementById('pwa-platform-indicator');
+    if (platformIndicator) {
+        platformIndicator.innerHTML = '<span class="text-emerald-400 font-medium">✓ Application is installed and ready to use</span>';
+    }
+}
+
+// Capture native beforeinstallprompt event (Chrome, Edge, Chromium Android)
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    console.log('[PWA] beforeinstallprompt event captured');
+
+    document.querySelectorAll('.pwa-install-trigger').forEach(btn => {
+        btn.classList.remove('hidden');
+    });
+});
+
+// Capture appinstalled event
+window.addEventListener('appinstalled', () => {
+    console.log('[PWA] App successfully installed');
+    deferredInstallPrompt = null;
+    updatePwaInstalledUI();
+    closePwaModal();
+});
+
+// Guide Modal functions
+function openPwaModal() {
+    const modal = document.getElementById('pwa-guide-modal');
+    const content = document.getElementById('pwa-guide-content');
+    if (!modal || !content) return;
+
+    const platform = getClientPlatform();
+    const isStandalone = isPwaStandalone();
+
+    if (isStandalone) {
+        content.innerHTML = `
+            <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 text-xs leading-relaxed">
+                <strong class="font-bold text-sm block mb-1">✓ Already Installed!</strong>
+                You are currently running the official College Complaints standalone application.
+            </div>
+        `;
+    } else if (platform === 'ios') {
+        content.innerHTML = `
+            <p class="font-semibold text-gray-900 mb-2">To download & install on iOS Safari:</p>
+            <ol class="list-decimal list-inside space-y-2.5 text-xs text-gray-700">
+                <li>Tap the <strong class="text-blue-600 font-semibold">Share</strong> button at the bottom of Safari (<span class="font-mono text-gray-500">[ ↑ ]</span> icon).</li>
+                <li>Scroll down the actions list and tap <strong class="text-gray-900 font-bold">"Add to Home Screen"</strong>.</li>
+                <li>Tap <strong class="text-blue-600 font-bold">Add</strong> in the top-right corner to finish.</li>
+            </ol>
+            <p class="text-[11px] text-gray-500 mt-2">The College Complaints app icon will be added to your home screen.</p>
+        `;
+    } else if (platform === 'android') {
+        content.innerHTML = `
+            <p class="font-semibold text-gray-900 mb-2">To download & install on Android:</p>
+            <ol class="list-decimal list-inside space-y-2.5 text-xs text-gray-700">
+                <li>Tap the browser menu <strong class="text-gray-900 font-bold">(⋮ three dots)</strong> in the top-right corner.</li>
+                <li>Select <strong class="text-blue-600 font-bold">"Install app"</strong> or <strong class="text-blue-600 font-bold">"Add to Home screen"</strong>.</li>
+                <li>Tap <strong class="text-gray-900 font-bold">Install</strong> on the confirmation popup.</li>
+            </ol>
+        `;
+    } else {
+        content.innerHTML = `
+            <p class="font-semibold text-gray-900 mb-2">To install on Desktop / Laptop:</p>
+            <ol class="list-decimal list-inside space-y-2.5 text-xs text-gray-700">
+                <li>Click the <strong class="text-blue-600 font-bold">Install icon</strong> in your browser's address bar (on the right side).</li>
+                <li>Or open the browser menu <strong class="text-gray-900 font-bold">(⋮ or ...)</strong> and click <strong class="text-blue-600 font-bold">"Install College Complaints..."</strong>.</li>
+                <li>Click <strong class="text-gray-900 font-bold">Install</strong> in the dialog to complete.</li>
+            </ol>
+        `;
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closePwaModal() {
+    const modal = document.getElementById('pwa-guide-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+// Global click handler for all PWA install triggers
+async function handlePwaInstall() {
+    if (isPwaStandalone()) {
+        openPwaModal();
+        return;
+    }
+
+    if (deferredInstallPrompt) {
+        try {
+            deferredInstallPrompt.prompt();
+            const choice = await deferredInstallPrompt.userChoice;
+            if (choice.outcome === 'accepted') {
+                console.log('[PWA] User accepted the installation');
+                updatePwaInstalledUI();
+            } else {
+                console.log('[PWA] User dismissed the install prompt');
+            }
+        } catch (err) {
+            console.warn('[PWA] prompt error, opening guide', err);
+            openPwaModal();
+        }
+        deferredInstallPrompt = null;
+    } else {
+        // Fallback to platform-tailored modal instructions
+        openPwaModal();
+    }
 }
 
 // Online/Offline Network Status Detection
@@ -21,7 +171,56 @@ function updateOnlineStatus() {
 
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
-document.addEventListener('DOMContentLoaded', updateOnlineStatus);
+
+// Initialize PWA triggers and guide modal listeners on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    updateOnlineStatus();
+
+    if (isPwaStandalone()) {
+        updatePwaInstalledUI();
+    }
+
+    // Attach click listener to all download/install buttons
+    document.querySelectorAll('.pwa-install-trigger').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            handlePwaInstall();
+        });
+    });
+
+    // Modal listeners
+    const modalCloseBtn = document.getElementById('pwa-modal-close');
+    const modalActionBtn = document.getElementById('pwa-guide-action-btn');
+    const modal = document.getElementById('pwa-guide-modal');
+
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closePwaModal);
+    if (modalActionBtn) modalActionBtn.addEventListener('click', closePwaModal);
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closePwaModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closePwaModal();
+            }
+        });
+    }
+
+    // Platform text indicator on home page
+    const platformIndicator = document.getElementById('pwa-platform-indicator');
+    if (platformIndicator && !isPwaStandalone()) {
+        const plat = getClientPlatform();
+        if (plat === 'windows') {
+            platformIndicator.textContent = 'Instant install for Windows PC / Edge / Chrome';
+        } else if (plat === 'android') {
+            platformIndicator.textContent = '1-tap install for Android / Chrome';
+        } else if (plat === 'ios') {
+            platformIndicator.textContent = 'Add to Home Screen for iPhone / iPad';
+        } else if (plat === 'mac') {
+            platformIndicator.textContent = 'Instant install for Mac / Chrome / Edge';
+        }
+    }
+});
 
 // Mobile Navigation Toggle & Camera/Photo Picker
 document.addEventListener('DOMContentLoaded', () => {
